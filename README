@@ -1,0 +1,43 @@
+NAME
+    Kappa - super-light ORM
+
+SYNOPSIS
+      use Kappa;
+      use DBI;
+      my $dbh = DBI->connect($dsn, $id, $pw);
+      my $db = Kappa->new($dbh);
+      my $row_obj = $db->select('SOME_TABLE', { id => 123 });
+      print $row_obj->id, $row_obj->value;
+
+DESCRIPTION
+    Kappa is a super-light ORM. You can use this module without defining
+    schema-class and if you want to define table-related logic, you can
+    define table-class for each table.
+
+METHODS
+  new($dbh, $options_href)
+    create instance.
+
+    available options are as follows.
+
+    row_namespace (string, default 'Kappa::Row') : namespace for row object.
+    table_namespace (string, default 'Kappa') : namespace for table class.
+
+  create($table_name)
+    create instance for defined table class. if table class for $table_name
+    is not found, return default class.
+
+DEFINE ROW CLASS
+DEFINE TABLE CLASS
+AUTHOR
+    Takuya Tsuchida <tsucchi {at} cpan.org>
+
+SEE ALSO
+    SQL::Executor
+
+LICENSE
+    Copyright (C) Takuya Tsuchida
+
+    This library is free software; you can redistribute it and/or modify it
+    under the same terms as Perl itself.
+
