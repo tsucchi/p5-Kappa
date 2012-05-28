@@ -32,6 +32,20 @@ table\_namespace (string, default 'Kappa')      :  namespace for table class.
 create instance for defined table class. if table class for $table\_name is not found, 
 return default class.
 
+## row\_object\_enable($status)
+
+$status: BOOL
+enable or disable making row object. if return value is required, this value is guard object.
+
+    my $db = Kappa->new($dbh);
+    {
+        my $guard = $db->row_object_enable(1); #set false to row_object_enable
+        my $row = $db->select('SOME_TABLE', { id => 123 }); # $row is not row_object (returns hashref in this case)
+    }
+    my $row = $db->select('SOME_TABLE', { id => 123 }) # row object is returned.(row_object_enable is currently TRUE)
+
+
+
 # DEFINE ROW CLASS
 
 # DEFINE TABLE CLASS

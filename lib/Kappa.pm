@@ -8,6 +8,7 @@ use Class::Accessor::Lite (
 );
 use Kappa::Row;
 use Class::Load qw();
+use Scope::Guard;
 
 sub new {
     my ($class, $dbh, $option_href) = @_;
@@ -51,7 +52,17 @@ sub create {
     return Kappa->new($self->dbh, $self->options, $table_name);
 }
 
-
+sub row_object_enable {
+    my ($self, $row_object_enable) = @_;
+    if ( !!$row_object_enable ) {
+        $self->restore_callback;
+        return Scope::Guard->new( sub { $self->disable_callback } ) if ( defined wantarray() );# guard object is required.
+    }
+    else {
+        $self->disable_callback;
+        return Scope::Guard->new( sub { $self->restore_callback } ) if ( defined wantarray() );# guard object is required.
+    }
+}
 
 1;
 __END__
@@ -89,6 +100,19 @@ table_namespace (string, default 'Kappa')      :  namespace for table class.
 
 create instance for defined table class. if table class for $table_name is not found, 
 return default class.
+
+=head2 row_object_enable($status)
+
+$status: BOOL
+enable or disable making row object. if return value is required, this value is guard object.
+
+  my $db = Kappa->new($dbh);
+  {
+      my $guard = $db->row_object_enable(1); #set false to row_object_enable
+      my $row = $db->select('SOME_TABLE', { id => 123 }); # $row is not row_object (returns hashref in this case)
+  }
+  my $row = $db->select('SOME_TABLE', { id => 123 }) # row object is returned.(row_object_enable is currently TRUE)
+
 
 =head1 DEFINE ROW CLASS
 

@@ -8,6 +8,7 @@ githubmeta;
 
 requires 'SQL::Executor';
 requires 'Class::Load';
+requires 'Scope::Guard';
 recommends 'Class::Load::XS';
 
 tests 't/*.t';
