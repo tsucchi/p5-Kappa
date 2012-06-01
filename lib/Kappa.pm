@@ -41,15 +41,15 @@ sub create {
     if( defined $self->table_namespace ) {
         my $table_class = $self->table_namespace . "::$table_name";
         if( Class::Load::try_load_class($table_class) ) {
-            my $options = $self->options;
-            $options->{table_name} = $table_name;
-            return $table_class->new($self->dbh, $options);
+            my %options = %{ $self->options || {} };
+            $options{table_name} = $table_name;
+            return $table_class->new($self->dbh, \%options);
         }
         if( Class::Load::try_load_class($self->table_namespace) ) {
             return $self->table_namespace->new($self->dbh, $self->options);
         }
     }
-    return Kappa->new($self->dbh, $self->options, $table_name);
+    return Kappa->new($self->dbh, $self->options);
 }
 
 sub row_object_enable {
@@ -93,13 +93,32 @@ create instance.
 
 available options are as follows.
 
-row_namespace   (string, default 'Kappa::Row') :  namespace for row object.
-table_namespace (string, default 'Kappa')      :  namespace for table class.
+=over 4
+
+=item * row_namespace   (string, default 'Kappa::Row') :  namespace for row object.
+
+=item * table_namespace (string, default 'Kappa')      :  namespace for table class.
+
+=back
+
+  my $dbh = DBI->connect($dsn, $user, $pass);
+  my $db = Kappa->new($dbh, {
+      row_namespace   => 'MyProj::Row',
+      table_namespace => 'MyProj::Table',
+  });
 
 =head2 create($table_name)
 
 create instance for defined table class. if table class for $table_name is not found, 
 return default class.
+
+  my $db = Kappa->new($dbh, {
+      table_namespace => 'MyProj::Table',
+  });
+  my $db_for_order = $db->create('Order'); #return table MyProj::Table::Order table class(if defined)
+
+In this case, Instance of MyProj::Table::Order will be returned. If MyProj::Table::Order is not defined, 
+return MyProj::Table instance if defiend MyProj::Table and if not defined both of them, return Kappa instance.
 
 =head2 row_object_enable($status)
 
@@ -108,15 +127,88 @@ enable or disable making row object. if return value is required, this value is 
 
   my $db = Kappa->new($dbh);
   {
-      my $guard = $db->row_object_enable(1); #set false to row_object_enable
+      my $guard = $db->row_object_enable(0); #set false to row_object_enable
       my $row = $db->select('SOME_TABLE', { id => 123 }); # $row is not row_object (returns hashref in this case)
   }
   my $row = $db->select('SOME_TABLE', { id => 123 }) # row object is returned.(row_object_enable is currently TRUE)
 
 
-=head1 DEFINE ROW CLASS
+=head1 DEFINE CUSTOMIZED ROW CLASS
 
-=head1 DEFINE TABLE CLASS
+You can define Row class specified in specified in row_namespace at new(). for example, define MyProj::Row::Order like this,
+
+  package MyProj::Row::Order;
+  use parent qw(Kappa::Row);
+  use strict;
+  use warnings;
+
+  sub price_with_tax {
+      my ($self) = @_
+      return $self->price * $self->tax;
+  }
+
+  1;
+
+using this row object like this, 
+
+  my $db = Kappa->new($dbh, { row_namespace => 'MyProj::Row' });
+  my @rows = $db->select('Order', { customer_name => 'some_customer' });
+  for my $row ( @rows ) {
+      print "$row->product_name : $row->price_with_tax \n"; # enable to use customized method(price_with_tax)
+  }
+
+What row object can do is only call calling customized method (in this case calling price_with_tax()).
+
+=head1 DEFINE CUSTOMIZED TABLE CLASS
+
+You can also define Table class specified in table_namespace at new(). for example, define MyProj::Table::Order like this,
+
+  package MyProj::Table::Order;
+  use parent qw(Kappa);
+  use strict;
+  use warnings;
+
+  sub select_using_very_complex_sql {
+      my($self, $condition_href) = @_;
+      my ($sql, @binds)  = $self->_very_complex_sql($condition_href);
+      return $self->select_by_sql($sql, \@binds, $self->table_name); #recommend to pass $self->table_name to make row object for this table
+  }
+  sub _very_complex_sql { ... }
+
+using this table class like this,
+
+  my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table' });
+  my $db_for_order = $db->create('Order');
+  my @rows = $db_for_order->select_using_very_complex_sql($condition_href);
+
+
+=head1 How to use Transaction.
+
+You can use L<DBI>'s transaction (begin_work and commit).
+
+  use DBI;
+  use Kappa
+  my $dbh = DBI->connect($dsn, $id, $pass);
+  my $db = Kappa->new($dbh);
+  $dbh->begin_work();
+  $db->insert('SOME_TABLE', { id => 124, value => 'xxxx'} );
+  $db->insert('SOME_TABLE', { id => 125, value => 'yyy' } );
+  $dbh->commit();
+
+
+Or you can also use transaction management modules like L<DBIx::TransactionManager>.
+
+  use DBI;
+  use Kappa;
+  use DBIx::TransactionManager;
+  my $dbh = DBI->connect($dsn, $id, $pass);
+  my $db = Kappa->new($dbh);
+  my $tm = DBIx::TransactionManager->new($dbh);
+  my $txn = $tm->txn_scope;
+  $db->insert('SOME_TABLE', { id => 124, value => 'xxxx'} );
+  $db->insert('SOME_TABLE', { id => 125, value => 'yyy' } );
+  $txn->commit;
+
 
 =head1 AUTHOR
 
