@@ -87,7 +87,7 @@ you can define table-class for each table.
 
 =head1 METHODS
 
-=head2 new($dbh, $options_href)
+=head2 new($dbh, [$options_href])
 
 create instance. 
 
@@ -131,6 +131,51 @@ enable or disable making row object. if return value is required, this value is 
       my $row = $db->select('SOME_TABLE', { id => 123 }); # $row is not row_object (returns hashref in this case)
   }
   my $row = $db->select('SOME_TABLE', { id => 123 }) # row object is returned.(row_object_enable is currently TRUE)
+
+=head1 METHODS FROM PARENT CLASS(SQL::Executor)
+
+folowing methods are delived from L<SQL::Executor>. Methods named select*_itr return Iterator using SQL::Executor::Iterator, 
+and other select* methods return Row object(Kappa::Row or child of the one).
+
+=head2 select($table_name, $where, $option)
+
+=head2 select_row($table_name, $where, $option)
+
+=head2 select_all($table_name, $where, $option)
+
+=head2 select_itr($table_name, $where, $option)
+
+=head2 select_named($sql, $params_href, $table_name)
+
+=head2 select_row_named($sql, $params_href, $table_name)
+
+=head2 select_all_named($sql, $params_href, $table_name)
+
+=head2 select_itr_named($sql, $params_href, $table_name)
+
+=head2 select_by_sql($sql, \@binds, $table_name)
+
+=head2 select_row_by_sql($sql, \@binds, $table_name)
+
+=head2 select_all_by_sql($sql, \@binds, $table_name)
+
+=head2 select_itr_by_sql($sql, \@binds, $table_name)
+
+=head2 select_with_fields($table_name, $fields_aref, $where, $option)
+
+=head2 select_row_with_fields($table_name, $fields_aref, $where, $option)
+
+=head2 select_all_with_fields($table_name, $fields_aref, $where, $option)
+
+=head2 select_itr_with_fields($table_name, $fields_aref, $where, $option)
+
+=head2 insert($table_name, $values)
+
+=head2 insert_multi($table_name, @args)
+
+=head2 delete($table_name, $where)
+
+=head2 update($table_name, $set, $where)
 
 
 =head1 DEFINE CUSTOMIZED ROW CLASS
