@@ -4,12 +4,20 @@ use warnings;
 use Carp qw();
 
 sub new {
-    my ($class, $row, $handle, $table_name) = @_;
+    my ($class, $row, $handle, $table_name, $option_href) = @_;
     my $self = {
         handle     => $handle,
         row_value  => $row,
         table_name => $table_name,
     };
+    if( !!$option_href->{use_anonymous_class} ) {
+        my $class_basename = defined $table_name ? $table_name : "_anon";
+        Carp::carp('table_name is not specified') if ( !defined $table_name );
+        my $address = $handle->dbh + 0;
+        $class = $class . "::" . $class_basename . "-" . $address;
+        no strict 'refs';
+        @{$class . "::ISA"} = 'Kappa::Row';
+    }
     bless $self, $class;
 }
 
@@ -34,6 +42,7 @@ sub AUTOLOAD {
 }
 
 sub DESTROY {} #for AUTOLOAD
+
 
 1;
 __END__

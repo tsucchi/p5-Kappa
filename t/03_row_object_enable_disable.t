@@ -21,7 +21,7 @@ my $option = { order_by => 'id' };
 subtest 'disable row object', sub {
     my $db = Kappa->new($dbh);
     my $row = $db->select_row('TEST', $condition, $option);
-    is( ref $row, 'Kappa::Row' );
+    ok( $row->isa('Kappa::Row') );
     {
         my $guard = $db->row_object_enable(0);
         $row = $db->select_row('TEST', $condition, $option);
@@ -29,7 +29,7 @@ subtest 'disable row object', sub {
     }
     # dismiss guard
     $row = $db->select_row('TEST', $condition, $option);
-    is( ref $row, 'Kappa::Row' );
+    ok( $row->isa('Kappa::Row') );
 
     $db->row_object_enable(0);
     $row = $db->select_row('TEST', $condition, $option);
@@ -45,7 +45,7 @@ subtest 'enable row object', sub {
     {
         my $guard = $db->row_object_enable(1);
         $row = $db->select_row('TEST', $condition, $option);
-        is( ref $row, 'Kappa::Row' );
+        ok( $row->isa('Kappa::Row') );
     }
     # dismiss guard
     $row = $db->select_row('TEST', $condition, $option);
@@ -54,7 +54,7 @@ subtest 'enable row object', sub {
     {
         $db->row_object_enable(1);
         $row = $db->select_row('TEST', $condition, $option);
-        is( ref $row, 'Kappa::Row' );
+        ok( $row->isa('Kappa::Row') );
     }
 };
 
@@ -63,7 +63,7 @@ subtest 'enable row object for customized row object', sub {
         row_namespace => 'CustomizedRow',
     });
     my $row = $db->select_row('TEST', $condition, $option);
-    is( ref $row, 'CustomizedRow::TEST' );
+    ok( $row->isa('CustomizedRow::TEST') );
     {
         my $guard = $db->row_object_enable(0);
         $row = $db->select_row('TEST', $condition, $option);
@@ -71,7 +71,7 @@ subtest 'enable row object for customized row object', sub {
     }
     # dismiss guard
     $row = $db->select_row('TEST', $condition, $option);
-    is( ref $row, 'CustomizedRow::TEST' );
+    ok( $row->isa('CustomizedRow::TEST') );
 };
 
 

@@ -24,7 +24,7 @@ sub new {
                     return $self->row_namespace->new($row, $self, $table_name);
                 }
             }
-            return Kappa::Row->new($row, $self, $table_name);
+            return Kappa::Row->new($row, $self, $table_name, { use_anonymous_class => 1 });
         },
     });
 
