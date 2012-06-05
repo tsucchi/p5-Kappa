@@ -21,7 +21,7 @@ sub new {
                     return $row_class->new($row, $self, $table_name);
                 }
                 if ( Class::Load::try_load_class($self->row_namespace) ) {
-                    return $self->row_namespace->new($row, $self, $table_name);
+                    return $self->row_namespace->new($row, $self, $table_name, { use_anonymous_class => 1 });
                 }
             }
             return Kappa::Row->new($row, $self, $table_name, { use_anonymous_class => 1 });

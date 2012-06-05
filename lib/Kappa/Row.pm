@@ -2,6 +2,7 @@ package Kappa::Row;
 use strict;
 use warnings;
 use Carp qw();
+use Data::UUID;
 
 sub new {
     my ($class, $row, $handle, $table_name, $option_href) = @_;
@@ -12,11 +13,12 @@ sub new {
     };
     if( !!$option_href->{use_anonymous_class} ) {
         my $class_basename = defined $table_name ? $table_name : "_anon";
-        Carp::carp('table_name is not specified') if ( !defined $table_name );
-        my $address = $handle->dbh + 0;
-        $class = $class . "::" . $class_basename . "-" . $address;
+        my $ug = Data::UUID->new();
+        my $uuid = $ug->create_str();
+        my $class_orig = $class;
+        $class = $class . "::" . $class_basename . "-" . $uuid;
         no strict 'refs';
-        @{$class . "::ISA"} = 'Kappa::Row';
+        @{$class . "::ISA"} = $class_orig;
     }
     bless $self, $class;
 }
