@@ -14,17 +14,17 @@ sub new {
     my ($class, $dbh, $option_href) = @_;
     my $self = $class->SUPER::new($dbh, {
         callback => sub {
-            my ($self, $row, $table_name) = @_;
+            my ($self, $row, $table_name, $select_id) = @_;
             if( defined $self->row_namespace ) {
                 my $row_class = $self->row_namespace . "::$table_name";
                 if( Class::Load::try_load_class($row_class) ) {
                     return $row_class->new($row, $self, $table_name);
                 }
                 if ( Class::Load::try_load_class($self->row_namespace) ) {
-                    return $self->row_namespace->new($row, $self, $table_name, { use_anonymous_class => 1 });
+                    return $self->row_namespace->new($row, $self, $table_name, { use_anonymous_class => 1, select_id => $select_id });
                 }
             }
-            return Kappa::Row->new($row, $self, $table_name, { use_anonymous_class => 1 });
+            return Kappa::Row->new($row, $self, $table_name, { use_anonymous_class => 1, select_id => $select_id });
         },
     });
 

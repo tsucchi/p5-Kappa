@@ -2,7 +2,6 @@ package Kappa::Row;
 use strict;
 use warnings;
 use Carp qw();
-use Data::UUID;
 
 sub new {
     my ($class, $row, $handle, $table_name, $option_href) = @_;
@@ -13,10 +12,9 @@ sub new {
     };
     if( !!$option_href->{use_anonymous_class} ) {
         my $class_basename = defined $table_name ? $table_name : "_anon";
-        my $ug = Data::UUID->new();
-        my $uuid = $ug->create_str();
+        my $select_id = $option_href->{select_id};
         my $class_orig = $class;
-        $class = $class . "::" . $class_basename . "-" . $uuid;
+        $class = $class . "::" . $class_basename . "-" . $select_id;
         no strict 'refs';
         @{$class . "::ISA"} = $class_orig;
     }
