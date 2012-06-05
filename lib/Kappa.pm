@@ -17,10 +17,10 @@ sub new {
             my ($self, $row, $table_name, $select_id) = @_;
             if( defined $self->row_namespace ) {
                 my $row_class = $self->row_namespace . "::$table_name";
-                if( Class::Load::try_load_class($row_class) ) {
+                if( Class::Load::load_optional_class($row_class) ) {
                     return $row_class->new($row, $self, $table_name);
                 }
-                if ( Class::Load::try_load_class($self->row_namespace) ) {
+                if ( Class::Load::load_optional_class($self->row_namespace) ) {
                     return $self->row_namespace->new($row, $self, $table_name, { use_anonymous_class => 1, select_id => $select_id });
                 }
             }
@@ -40,12 +40,12 @@ sub create {
     my ($self, $table_name) = @_;
     if( defined $self->table_namespace ) {
         my $table_class = $self->table_namespace . "::$table_name";
-        if( Class::Load::try_load_class($table_class) ) {
+        if( Class::Load::load_optional_class($table_class) ) {
             my %options = %{ $self->options || {} };
             $options{table_name} = $table_name;
             return $table_class->new($self->dbh, \%options);
         }
-        if( Class::Load::try_load_class($self->table_namespace) ) {
+        if( Class::Load::load_optional_class($self->table_namespace) ) {
             return $self->table_namespace->new($self->dbh, $self->options);
         }
     }
