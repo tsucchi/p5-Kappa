@@ -4,9 +4,9 @@ use warnings;
 use Carp qw();
 
 sub new {
-    my ($class, $row, $handle, $table_name, $option_href) = @_;
+    my ($class, $row, $db, $table_name, $option_href) = @_;
     my $self = {
-        handle     => $handle,
+        db         => $db,
         row_value  => $row,
         table_name => $table_name,
     };
@@ -24,6 +24,11 @@ sub new {
 sub table_name {
     my ($self) = @_;
     return $self->{table_name};
+}
+
+sub db {
+    my ($self) = @_;
+    return $self->{db};
 }
 
 # define accessor for row values.
@@ -67,6 +72,10 @@ Kappa is a super-light ORM.
 =head2 new($row, $handle)
 
 create instance. 
+
+=head2 db()
+
+return caller ORM(Kappa or its subclass)
 
 =cut
 
