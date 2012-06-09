@@ -3,6 +3,7 @@ use strict;
 use warnings;
 use Test::More;
 use t::Util;
+use t::CustomizedTable;
 
 use Kappa;
 
@@ -11,18 +12,6 @@ prepare_testdata($dbh);
 
 my $condition = { value => 'aaa' };
 my $option = { order_by => 'id' };
-
-{
-    package CustomizedTable;
-    our @ISA = qw(Kappa);
-    sub xxx { return 'xxx' }
-}
-
-{
-    package CustomizedTable::TEST;
-    our @ISA = qw(CustomizedTable);
-    sub yyy { return 'yyy' }
-}
 
 subtest 'default instance', sub {
     my $db = Kappa->new($dbh);
