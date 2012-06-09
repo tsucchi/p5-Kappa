@@ -118,6 +118,36 @@ sub select_itr_by_sql { #override
     return $self->SUPER::select_itr_by_sql($sql, $params_aref, $self->table_name);
 }
 
+sub select_row_with_fields { #override
+    my $self = shift;
+    if( $self->_is_table_name_omit($_[0]) ) {
+        my ($fields_aref, $where, $option) = @_;
+        return $self->SUPER::select_row_with_fields($self->table_name, $fields_aref, $where, $option);
+    }
+    my ($table_name, $fields_aref, $where, $option) = @_;
+    return $self->SUPER::select_row_with_fields($table_name, $fields_aref, $where, $option);
+}
+
+sub select_all_with_fields { #override
+    my $self = shift;
+    if( $self->_is_table_name_omit($_[0]) ) {
+        my ($fields, $where, $option) = @_;
+        return $self->SUPER::select_all_with_fields($self->table_name, $fields, $where, $option);
+    }
+    my ($table_name, $fields, $where, $option) = @_;
+    return $self->SUPER::select_all_with_fields($table_name, $fields, $where, $option);
+}
+
+sub select_itr_with_fields { #override
+    my $self = shift;
+    if( $self->_is_table_name_omit($_[0]) ) {
+        my ($fields_aref, $where, $option) = @_;
+        return $self->SUPER::select_itr_with_fields($self->table_name, $fields_aref, $where, $option);
+    }
+    my ($table_name, $fields_aref, $where, $option) = @_;
+    return $self->SUPER::select_itr_with_fields($table_name, $fields_aref, $where, $option);
+}
+
 
 sub _is_table_name_omit {
     my ($self, $arg0) = @_;
@@ -320,11 +350,21 @@ run select by sql using normal placeholder('?').
 
 =head2 select_with_fields($table_name, $fields_aref, $where, $option)
 
+same as select but you can specify field name by using $fields_aref.
+Note that unspecified field value is not returned in row object.
+
+
 =head2 select_row_with_fields($table_name, $fields_aref, $where, $option)
+
+same as select_row but you can specify field name by using $fields_aref.
 
 =head2 select_all_with_fields($table_name, $fields_aref, $where, $option)
 
+same as select_all but you can specify field name by using $fields_aref.
+
 =head2 select_itr_with_fields($table_name, $fields_aref, $where, $option)
+
+same as select_itr but you can specify field name by using $fields_aref.
 
 =head2 insert($table_name, $values)
 
