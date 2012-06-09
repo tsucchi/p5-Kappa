@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use Test::More;
 use t::Util;
-
+use t::CustomizedTable;
 use Kappa;
 
 my $dbh = prepare_dbh();
@@ -12,20 +12,8 @@ prepare_testdata($dbh);
 my $condition = { value => 'aaa' };
 my $option = { order_by => 'id' };
 
-{
-    package CustomizedTable;
-    our @ISA = qw(Kappa);
-    sub xxx { return 'xxx' }
-}
-
-{
-    package CustomizedTable::TEST;
-    our @ISA = qw(CustomizedTable);
-    sub yyy { return 'yyy' }
-}
-
 subtest 'select', sub {
-    my $db_for_test = db_for_test();
+    my $db_for_test = db_for_test($dbh);
     my $row = $db_for_test->select($condition, $option);
     ok( defined $row );
     is( $row->value, 'aaa');
@@ -36,7 +24,7 @@ subtest 'select', sub {
 };
 
 subtest 'select_row', sub {
-    my $db_for_test = db_for_test();
+    my $db_for_test = db_for_test($dbh);
     my $row = $db_for_test->select_row($condition, $option);
     ok( defined $row );
     is( $row->value, 'aaa');
@@ -47,7 +35,7 @@ subtest 'select_row', sub {
 };
 
 subtest 'select_all', sub {
-    my $db_for_test = db_for_test();
+    my $db_for_test = db_for_test($dbh);
     my @rows = $db_for_test->select_all($condition, $option);
     ok( @rows );
     is( $rows[0]->value, 'aaa');
@@ -58,7 +46,7 @@ subtest 'select_all', sub {
 };
 
 subtest 'select_itr', sub {
-    my $db_for_test = db_for_test();
+    my $db_for_test = db_for_test($dbh);
     my $itr = $db_for_test->select_itr($condition, $option);
     my $row = $itr->next;
     ok( defined $row );
@@ -73,9 +61,3 @@ subtest 'select_itr', sub {
 
 done_testing;
 
-sub db_for_test {
-    my $db = Kappa->new($dbh, {
-        table_namespace => 'CustomizedTable',
-    });
-    return $db->create('TEST');
-}
