@@ -168,6 +168,16 @@ sub insert_multi { #override
     return $self->SUPER::insert_multi($self->table_name, @args);
 }
 
+sub update { #override
+    my $self = shift;
+    if( $self->_is_table_name_omit($_[0]) ) {
+        my ($set, $where) = @_;
+        return $self->SUPER::update($self->table_name, $set, $where);
+    }
+    my ($table_name, $set, $where) = @_;
+    return $self->SUPER::update($self->table_name, $set, $where);
+}
+
 
 sub _is_table_name_omit {
     my ($self, $arg0) = @_;
@@ -388,7 +398,7 @@ same as select_itr but you can specify field name by using $fields_aref.
 
 =head2 insert($table_name, $values)
 
-execute insert statment. return value is nothing.
+execute INSERT statment. return value is nothing.
 
 if table class is defined and select is called from table class, parameter $table_name is optional. like this, 
 
@@ -411,6 +421,14 @@ if table class is defined and select is called from table class, parameter $tabl
 =head2 delete($table_name, $where)
 
 =head2 update($table_name, $set, $where)
+
+execute UPDATE statment. return value is nothing.
+
+if table class is defined and select is called from table class, parameter $table_name is optional. like this, 
+
+  my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
+  my $db_for_sometable = $db->create('SOME_TABLE');
+  my $row = $db_for_sometable->update({ value => 'aaa' }, { id => 123 }); #omit $table_name
 
 
 =head1 DEFINE CUSTOMIZED ROW CLASS
