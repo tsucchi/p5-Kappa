@@ -94,27 +94,6 @@ sub select_itr { #override
     return $self->SUPER::select_itr($table_name, $where, $option);
 }
 
-sub select_row_named { #override
-    my ($self, $sql, $params_href, $table_name) = @_;
-
-    return $self->SUPER::select_row_named($sql, $params_href, $table_name) if ( defined $table_name && $table_name ne '' );
-    return $self->SUPER::select_row_named($sql, $params_href, $self->table_name);
-}
-
-sub select_all_named { #override
-    my ($self, $sql, $params_href, $table_name) = @_;
-
-    return $self->SUPER::select_all_named($sql, $params_href, $table_name) if ( defined $table_name && $table_name ne '' );
-    return $self->SUPER::select_all_named($sql, $params_href, $self->table_name);
-}
-
-sub select_itr_named { #override
-    my ($self, $sql, $params_href, $table_name) = @_;
-
-    return $self->SUPER::select_itr_named($sql, $params_href, $table_name) if ( defined $table_name && $table_name ne '' );
-    return $self->SUPER::select_itr_named($sql, $params_href, $self->table_name);
-}
-
 sub select_by_sql { #override
     my ($self, $sql, $params_aref, $table_name) = @_;
     return $self->SUPER::select_by_sql($sql, $params_aref, $table_name) if ( defined $table_name && $table_name ne '' );
