@@ -64,6 +64,42 @@ sub row_object_enable {
     }
 }
 
+sub select_row { #override
+    my $self = shift;
+    if( $self->_is_table_name_omit($_[0]) ) {
+        my ($where, $option) = @_;
+        return $self->SUPER::select_row($self->table_name, $where, $option);
+    }
+    my ($table_name, $where, $option) = @_;
+    return $self->SUPER::select_row($table_name, $where, $option);
+}
+
+sub select_all { #override
+    my $self = shift;
+    if( $self->_is_table_name_omit($_[0]) ) {
+        my ($where, $option) = @_;
+        return $self->SUPER::select_all($self->table_name, $where, $option);
+    }
+    my ($table_name, $where, $option) = @_;
+    return $self->SUPER::select_all($table_name, $where, $option);
+}
+
+sub select_itr { #override
+    my $self = shift;
+    if( $self->_is_table_name_omit($_[0]) ) {
+        my ($where, $option) = @_;
+        return $self->SUPER::select_itr($self->table_name, $where, $option);
+    }
+    my ($table_name, $where, $option) = @_;
+    return $self->SUPER::select_itr($table_name, $where, $option);
+}
+
+
+sub _is_table_name_omit {
+    my ($self, $arg0) = @_;
+    return defined $self->table_name && $self->table_name ne '' && ref $arg0 ne '';
+}
+
 1;
 __END__
 
@@ -139,11 +175,63 @@ and other select* methods return Row object(Kappa::Row or child of the one).
 
 =head2 select($table_name, $where, $option)
 
+return one Row object if scalar context is expected, or in array context, return arrays of Row objects. like this,
+
+  my $db = Kappa->new($dbh);
+  my @rows = $db->select('SOME_TABLE', { value => 'aaa' }); # return Row objects
+  my $row = $db->select('SOME_TABLE', { value => 'aaa' });  # return a Row object
+
+if table class is defined and select is called from table class, parameter $table_name is optional. like this, 
+
+  my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
+  my $db_for_sometable = $db->create('SOME_TABLE');
+  my @rows1 = $db_for_sometable->select({ value => 'aaa' }); #omit $table_name
+  my @rows2 = $db_for_sometable->select('SOME_TABLE', { value => 'aaa' }); #you can also specify table name 
+
+input parameter $where accepts hash_ref, array_ref, or L<SQL::Maker::Condition> instance. see L<SQL::Maker> select for details.
+input parameter $options is the same as L<SQL::Maker>'s one.
+
 =head2 select_row($table_name, $where, $option)
+
+return one Row object. if found more than one row, return the first one.
+
+if table class is defined and select is called from table class, parameter $table_name is optional. like this, 
+
+  my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
+  my $db_for_sometable = $db->create('SOME_TABLE');
+  my $row1 = $db_for_sometable->select_row({ value => 'aaa' }); #omit $table_name
+  my $row2 = $db_for_sometable->select_row('SOME_TABLE', { value => 'aaa' }); #you can also specify table name 
+
 
 =head2 select_all($table_name, $where, $option)
 
+return array of Row objects. 
+
+if table class is defined and select is called from table class, parameter $table_name is optional. like this, 
+
+  my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
+  my $db_for_sometable = $db->create('SOME_TABLE');
+  my @rows1 = $db_for_sometable->select_all({ value => 'aaa' }); #omit $table_name
+  my @rows2 = $db_for_sometable->select_all('SOME_TABLE', { value => 'aaa' }); #you can also specify table name 
+
 =head2 select_itr($table_name, $where, $option)
+
+return iterator that contains Row object. Iterator is instance of SQL::Executor::Iterator
+
+  my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
+  my $itr = $db->select_itr({ value => 'aaa' });
+  while ( my $row = $itr->next ) { # $row is Row object
+      ...# using Row object
+  }
+
+
+if table class is defined and select is called from table class, parameter $table_name is optional. like this, 
+
+  my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
+  my $db_for_sometable = $db->create('SOME_TABLE');
+  my $itr1 = $db_for_sometable->select_itr({ value => 'aaa' }); #omit $table_name
+  my $itr2 = $db_for_sometable->select_itr('SOME_TABLE', { value => 'aaa' }); #you can also specify table name 
+
 
 =head2 select_named($sql, $params_href, $table_name)
 
