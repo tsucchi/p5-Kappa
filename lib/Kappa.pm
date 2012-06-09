@@ -148,6 +148,26 @@ sub select_itr_with_fields { #override
     return $self->SUPER::select_itr_with_fields($table_name, $fields_aref, $where, $option);
 }
 
+sub insert { #override
+    my $self = shift;
+    if( $self->_is_table_name_omit($_[0]) ) {
+        my ($values) = @_;
+        return $self->SUPER::insert($self->table_name, $values);
+    }
+    my ($table_name, $values) = @_;
+    return $self->SUPER::insert($self->table_name, $values);
+}
+
+sub insert_multi { #override
+    my $self = shift;
+    if( $self->_is_table_name_omit($_[0]) ) {
+        my (@args) = @_;
+        return $self->SUPER::insert_multi($self->table_name, @args);
+    }
+    my ($table_name, @args) = @_;
+    return $self->SUPER::insert_multi($self->table_name, @args);
+}
+
 
 sub _is_table_name_omit {
     my ($self, $arg0) = @_;
@@ -368,7 +388,25 @@ same as select_itr but you can specify field name by using $fields_aref.
 
 =head2 insert($table_name, $values)
 
+execute insert statment. return value is nothing.
+
+if table class is defined and select is called from table class, parameter $table_name is optional. like this, 
+
+  my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
+  my $db_for_sometable = $db->create('SOME_TABLE');
+  my $row = $db_for_sometable->insert({ id => 123, value => 'aaa' }); #omit $table_name
+
+
 =head2 insert_multi($table_name, @args)
+
+execute bulk insert using L<SQL::Maker>'s insert_multi. return value is nothing.
+
+if table class is defined and select is called from table class, parameter $table_name is optional. like this, 
+
+  my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
+  my $db_for_sometable = $db->create('SOME_TABLE');
+  my $row = $db_for_sometable->insert_multi({ id => 123, value => 'aaa' }, { id => 124, value => 'bbb' }); #omit $table_name
+
 
 =head2 delete($table_name, $where)
 
