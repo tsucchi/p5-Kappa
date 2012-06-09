@@ -65,43 +65,196 @@ and other select\* methods return Row object(Kappa::Row or child of the one).
 
 ## select($table\_name, $where, $option)
 
+return one Row object if scalar context is expected, or in array context, return arrays of Row objects. like this,
+
+    my $db = Kappa->new($dbh);
+    my @rows = $db->select('SOME_TABLE', { value => 'aaa' }); # return Row objects
+    my $row = $db->select('SOME_TABLE', { value => 'aaa' });  # return a Row object
+
+if table class is defined and select is called from table class, parameter $table\_name is optional. like this, 
+
+    my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
+    my $db_for_sometable = $db->create('SOME_TABLE');
+    my @rows1 = $db_for_sometable->select({ value => 'aaa' }); #omit $table_name
+    my @rows2 = $db_for_sometable->select('SOME_TABLE', { value => 'aaa' }); #you can also specify table name 
+
+input parameter $where accepts hash\_ref, array\_ref, or [SQL::Maker::Condition](http://search.cpan.org/perldoc?SQL::Maker::Condition) instance. see [SQL::Maker](http://search.cpan.org/perldoc?SQL::Maker) select for details.
+input parameter $options is the same as [SQL::Maker](http://search.cpan.org/perldoc?SQL::Maker)'s one.
+
 ## select\_row($table\_name, $where, $option)
+
+return one Row object. if found more than one row, return the first one.
+
+if table class is defined and select is called from table class, parameter $table\_name is optional. like this, 
+
+    my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
+    my $db_for_sometable = $db->create('SOME_TABLE');
+    my $row1 = $db_for_sometable->select_row({ value => 'aaa' }); #omit $table_name
+    my $row2 = $db_for_sometable->select_row('SOME_TABLE', { value => 'aaa' }); #you can also specify table name 
+
+
 
 ## select\_all($table\_name, $where, $option)
 
+return array of Row objects. 
+
+if table class is defined and select is called from table class, parameter $table\_name is optional. like this, 
+
+    my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
+    my $db_for_sometable = $db->create('SOME_TABLE');
+    my @rows1 = $db_for_sometable->select_all({ value => 'aaa' }); #omit $table_name
+    my @rows2 = $db_for_sometable->select_all('SOME_TABLE', { value => 'aaa' }); #you can also specify table name 
+
 ## select\_itr($table\_name, $where, $option)
+
+return iterator that contains Row object. Iterator is instance of [SQL::Executor::Iterator](http://search.cpan.org/perldoc?SQL::Executor::Iterator)
+
+    my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
+    my $itr = $db->select_itr({ value => 'aaa' });
+    while ( my $row = $itr->next ) { # $row is Row object
+        ...# using Row object
+    }
+
+
+
+if table class is defined and select is called from table class, parameter $table\_name is optional. like this, 
+
+    my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
+    my $db_for_sometable = $db->create('SOME_TABLE');
+    my $itr1 = $db_for_sometable->select_itr({ value => 'aaa' }); #omit $table_name
+    my $itr2 = $db_for_sometable->select_itr('SOME_TABLE', { value => 'aaa' }); #you can also specify table name 
+
+
 
 ## select\_named($sql, $params\_href, $table\_name)
 
+run select by sql using named placeholder. 
+In scalar context, return one row object. In array context, return array of row objects.
+
+    my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
+    my $row = $db->select_named('SELECT id, value FROM SOME_TABLE WHERE value = :value', { value => 'aaa' });
+
+$table\_name is optional but you need customized Row object, you must specify $table\_name.
+
+
+
 ## select\_row\_named($sql, $params\_href, $table\_name)
+
+run select by sql using named placeholder. and return one row object.
+
+    my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
+    my $row = $db->select_row_named('SELECT id, value FROM SOME_TABLE WHERE value = :value', { value => 'aaa' });
+
+$table\_name is optional but you need customized Row object, you must specify $table\_name.
+
+
 
 ## select\_all\_named($sql, $params\_href, $table\_name)
 
+run select by sql using named placeholder. and return array of row objects.
+
+    my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
+    my @rows = $db->select_all_named('SELECT id, value FROM SOME_TABLE WHERE value = :value', { value => 'aaa' });
+
+$table\_name is optional but you need customized Row object, you must specify $table\_name.
+
+
+
 ## select\_itr\_named($sql, $params\_href, $table\_name)
+
+run select by sql using named placeholder. and return iterator that contains row objects.
+Iterator is instance of [SQL::Executor::Iterator](http://search.cpan.org/perldoc?SQL::Executor::Iterator)
+
+    my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
+    my $itr = $db->select_itr_named('SELECT id, value FROM SOME_TABLE WHERE value = :value', { value => 'aaa' });
+    while ( my $row = $itr->next ) { # $row is row object
+        ... #using row object
+    }
+
+$table\_name is optional but you need customized Row object, you must specify $table\_name.
+
+
 
 ## select\_by\_sql($sql, \\@binds, $table\_name)
 
+run select by sql using normal placeholder('?').
+
 ## select\_row\_by\_sql($sql, \\@binds, $table\_name)
+
+run select by sql using normal placeholder('?').
 
 ## select\_all\_by\_sql($sql, \\@binds, $table\_name)
 
+run select by sql using normal placeholder('?').
+
 ## select\_itr\_by\_sql($sql, \\@binds, $table\_name)
+
+run select by sql using normal placeholder('?').
 
 ## select\_with\_fields($table\_name, $fields\_aref, $where, $option)
 
+same as select but you can specify field name by using $fields\_aref.
+Note that unspecified field value is not returned in row object.
+
+
+
 ## select\_row\_with\_fields($table\_name, $fields\_aref, $where, $option)
+
+same as select\_row but you can specify field name by using $fields\_aref.
 
 ## select\_all\_with\_fields($table\_name, $fields\_aref, $where, $option)
 
+same as select\_all but you can specify field name by using $fields\_aref.
+
 ## select\_itr\_with\_fields($table\_name, $fields\_aref, $where, $option)
+
+same as select\_itr but you can specify field name by using $fields\_aref.
 
 ## insert($table\_name, $values)
 
+execute INSERT statment. return value is nothing.
+
+if table class is defined and select is called from table class, parameter $table\_name is optional. like this, 
+
+    my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
+    my $db_for_sometable = $db->create('SOME_TABLE');
+    my $row = $db_for_sometable->insert({ id => 123, value => 'aaa' }); #omit $table_name
+
+
+
 ## insert\_multi($table\_name, @args)
+
+execute bulk insert using [SQL::Maker](http://search.cpan.org/perldoc?SQL::Maker)'s insert\_multi. return value is nothing.
+
+if table class is defined and select is called from table class, parameter $table\_name is optional. like this, 
+
+    my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
+    my $db_for_sometable = $db->create('SOME_TABLE');
+    my $row = $db_for_sometable->insert_multi({ id => 123, value => 'aaa' }, { id => 124, value => 'bbb' }); #omit $table_name
+
+
 
 ## delete($table\_name, $where)
 
+execute DELETE statment. return value is nothing.
+
+if table class is defined and select is called from table class, parameter $table\_name is optional. like this, 
+
+    my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
+    my $db_for_sometable = $db->create('SOME_TABLE');
+    my $row = $db_for_sometable->delete({ id => 123 }); #omit $table_name
+
+
+
 ## update($table\_name, $set, $where)
+
+execute UPDATE statment. return value is nothing.
+
+if table class is defined and select is called from table class, parameter $table\_name is optional. like this, 
+
+    my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
+    my $db_for_sometable = $db->create('SOME_TABLE');
+    my $row = $db_for_sometable->update({ value => 'aaa' }, { id => 123 }); #omit $table_name
 
 
 
