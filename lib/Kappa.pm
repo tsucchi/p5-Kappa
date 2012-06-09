@@ -178,6 +178,16 @@ sub update { #override
     return $self->SUPER::update($self->table_name, $set, $where);
 }
 
+sub delete { #override
+    my $self = shift;
+    if( $self->_is_table_name_omit($_[0]) ) {
+        my ($where) = @_;
+        return $self->SUPER::delete($self->table_name, $where);
+    }
+    my ($table_name, $where) = @_;
+    return $self->SUPER::delete($self->table_name, $where);
+}
+
 
 sub _is_table_name_omit {
     my ($self, $arg0) = @_;
@@ -419,6 +429,15 @@ if table class is defined and select is called from table class, parameter $tabl
 
 
 =head2 delete($table_name, $where)
+
+execute DELETE statment. return value is nothing.
+
+if table class is defined and select is called from table class, parameter $table_name is optional. like this, 
+
+  my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
+  my $db_for_sometable = $db->create('SOME_TABLE');
+  my $row = $db_for_sometable->delete({ id => 123 }); #omit $table_name
+
 
 =head2 update($table_name, $set, $where)
 
