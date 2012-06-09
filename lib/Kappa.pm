@@ -237,7 +237,7 @@ if table class is defined and select is called from table class, parameter $tabl
 
 =head2 select_itr($table_name, $where, $option)
 
-return iterator that contains Row object. Iterator is instance of SQL::Executor::Iterator
+return iterator that contains Row object. Iterator is instance of L<SQL::Executor::Iterator>
 
   my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
   my $itr = $db->select_itr({ value => 'aaa' });
@@ -286,6 +286,18 @@ $table_name is optional but you need customized Row object, you must specify $ta
 
 
 =head2 select_itr_named($sql, $params_href, $table_name)
+
+run select by sql using named placeholder. and return iterator that contains row objects.
+Iterator is instance of L<SQL::Executor::Iterator>
+
+  my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
+  my $itr = $db->select_itr_named('SELECT id, value FROM SOME_TABLE WHERE value = :value', { value => 'aaa' });
+  while ( my $row = $itr->next ) { # $row is row object
+      ... #using row object
+  }
+
+$table_name is optional but you need customized Row object, you must specify $table_name.
+
 
 =head2 select_by_sql($sql, \@binds, $table_name)
 
