@@ -9,7 +9,7 @@ use Kappa;
 my $dbh = prepare_dbh();
 prepare_testdata($dbh);
 
-subtest 'insert', sub {
+subtest 'update', sub {
     my $db_for_test = db_for_test($dbh);
     $db_for_test->insert('TEST', { id => 123, value => 'aaa' });
     $db_for_test->update('TEST', { value => 'bbb' }, { id => 123 });
