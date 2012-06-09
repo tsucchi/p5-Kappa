@@ -51,9 +51,3 @@ subtest 'select_itr_named', sub {
 
 done_testing;
 
-# sub db_for_test {
-#     my $db = Kappa->new($dbh, {
-#         table_namespace => 'CustomizedTable',
-#     });
-#     return $db->create('TEST');
-# }
