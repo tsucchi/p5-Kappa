@@ -31,7 +31,7 @@ sub new {
     $self->{row_namespace}     = $option_href->{row_namespace};
     $self->{table_namespace}   = $option_href->{table_namespace};
     $self->{table_name}        = $option_href->{table_name};
-    $self->{row_object_enable} = $option_href->{row_object_enable} ? $option_href->{row_object_enable} : 1;
+    $self->{row_object_enable} = defined $option_href->{row_object_enable} ? $option_href->{row_object_enable} : 1;
 
     $self->{options} = $option_href;
     bless $self, $class;
