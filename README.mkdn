@@ -34,6 +34,8 @@ available options are as follows.
         table_namespace => 'MyProj::Table',
     });
 
+## model($table\_name)
+
 ## create($table\_name)
 
 create instance for defined table class. if table class for $table\_name is not found, 
@@ -42,10 +44,12 @@ return default class.
     my $db = Kappa->new($dbh, {
         table_namespace => 'MyProj::Table',
     });
-    my $db_for_order = $db->create('Order'); #return table MyProj::Table::Order table class(if defined)
+    my $db_for_order = $db->model('Order'); #return table MyProj::Table::Order table class(if defined)
 
 In this case, Instance of MyProj::Table::Order will be returned. If MyProj::Table::Order is not defined, 
 return MyProj::Table instance if defiend MyProj::Table and if not defined both of them, return Kappa instance.
+
+create() is alias for model() method. and create() method is deprecated, removed in future release.
 
 ## row\_object\_enable($status)
 

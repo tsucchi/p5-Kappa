@@ -33,4 +33,17 @@ subtest 'specify table class namespace', sub {
     is( $db_for_test->table_name, 'TEST');
 };
 
+subtest 'specify table class namespace(using model method)', sub {
+    my $db = Kappa->new($dbh, {
+        table_namespace => 'CustomizedTable',
+    });
+    my $db_for_aaa = $db->model('AAA');
+    is( ref $db_for_aaa, 'CustomizedTable');
+    is( $db_for_aaa->table_name, undef);
+
+    my $db_for_test = $db->model('TEST');
+    is( ref $db_for_test, 'CustomizedTable::TEST');
+    is( $db_for_test->table_name, 'TEST');
+};
+
 done_testing;
