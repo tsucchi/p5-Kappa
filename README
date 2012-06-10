@@ -35,6 +35,7 @@ METHODS
           table_namespace => 'MyProj::Table',
       });
 
+  model($table_name)
   create($table_name)
     create instance for defined table class. if table class for $table_name
     is not found, return default class.
@@ -42,12 +43,15 @@ METHODS
       my $db = Kappa->new($dbh, {
           table_namespace => 'MyProj::Table',
       });
-      my $db_for_order = $db->create('Order'); #return table MyProj::Table::Order table class(if defined)
+      my $db_for_order = $db->model('Order'); #return table MyProj::Table::Order table class(if defined)
 
     In this case, Instance of MyProj::Table::Order will be returned. If
     MyProj::Table::Order is not defined, return MyProj::Table instance if
     defiend MyProj::Table and if not defined both of them, return Kappa
     instance.
+
+    create() is alias for model() method. and create() method is deprecated,
+    removed in future release.
 
   row_object_enable($status)
     $status: BOOL enable or disable making row object. if return value is
