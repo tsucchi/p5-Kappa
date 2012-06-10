@@ -30,6 +30,8 @@ available options are as follows.
 
 =item * table_namespace (string, default 'Kappa')      :  namespace for table class.
 
+=item * row_object_enable (BOOL, default 1(TRUE))      :  Row object is generated or not
+
 =back
 
   my $dbh = DBI->connect($dsn, $user, $pass);

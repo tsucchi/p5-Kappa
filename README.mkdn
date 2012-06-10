@@ -26,6 +26,7 @@ available options are as follows.
 
 - row\_namespace   (string, default 'Kappa::Row') :  namespace for row object.
 - table\_namespace (string, default 'Kappa')      :  namespace for table class.
+- row\_object\_enable (BOOL, default 1(TRUE))      :  Row object is generated or not
 
     my $dbh = DBI->connect($dsn, $user, $pass);
     my $db = Kappa->new($dbh, {
