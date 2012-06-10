@@ -28,9 +28,10 @@ sub new {
         },
     });
 
-    $self->{row_namespace}   = $option_href->{row_namespace};
-    $self->{table_namespace} = $option_href->{table_namespace};
-    $self->{table_name}      = $option_href->{table_name};
+    $self->{row_namespace}     = $option_href->{row_namespace};
+    $self->{table_namespace}   = $option_href->{table_namespace};
+    $self->{table_name}        = $option_href->{table_name};
+    $self->{row_object_enable} = $option_href->{row_object_enable} ? $option_href->{row_object_enable} : 1;
 
     $self->{options} = $option_href;
     bless $self, $class;
@@ -54,14 +55,17 @@ sub create {
 
 sub row_object_enable {
     my ($self, $row_object_enable) = @_;
+
+    my $current_status = !!$self->{row_object_enable};
+    $self->{row_object_enable} = $row_object_enable;
+
     if ( !!$row_object_enable ) {
         $self->restore_callback;
-        return Scope::Guard->new( sub { $self->disable_callback } ) if ( defined wantarray() );# guard object is required.
     }
     else {
         $self->disable_callback;
-        return Scope::Guard->new( sub { $self->restore_callback } ) if ( defined wantarray() );# guard object is required.
     }
+    return Scope::Guard->new( sub { $self->row_object_enable($current_status) } ) if ( defined wantarray() );# guard object is required.
 }
 
 sub select_row { #override
@@ -228,6 +232,8 @@ available options are as follows.
 =item * row_namespace   (string, default 'Kappa::Row') :  namespace for row object.
 
 =item * table_namespace (string, default 'Kappa')      :  namespace for table class.
+
+=item * row_object_enable (BOOL, default 1(TRUE))      :  Row object is generated or not
 
 =back
 

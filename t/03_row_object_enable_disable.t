@@ -74,5 +74,27 @@ subtest 'enable row object for customized row object', sub {
     ok( $row->isa('CustomizedRow::TEST') );
 };
 
+subtest 'nested guard', sub {
+    my $db = Kappa->new($dbh);
+    my $row = $db->select_row('TEST', $condition, $option);
+    ok( $row->isa('Kappa::Row') );
+    {
+        my $guard = $db->row_object_enable(0);
+        $row = $db->select_row('TEST', $condition, $option);
+        is( ref $row, 'HASH' );
+        {
+            my $guard = $db->row_object_enable(0);
+            $row = $db->select_row('TEST', $condition, $option);
+            is( ref $row, 'HASH' );
+        }
+        $row = $db->select_row('TEST', $condition, $option);
+        is( ref $row, 'HASH' );
+    }
+    # dismiss guard
+    $row = $db->select_row('TEST', $condition, $option);
+    ok( $row->isa('Kappa::Row') );
+
+};
+
 
 done_testing();
