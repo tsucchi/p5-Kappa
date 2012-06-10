@@ -1,4 +1,7 @@
 Revision history for Perl extension Kappa
+0.02    2012/06/10
+        - fix: row_object_enable() works in nested scope.
+        - when table class is used, select*/insert*/update/delete can be run if table_name is omitted.
 
 0.01    Wed May 23 09:22:45 2012
         - original version
