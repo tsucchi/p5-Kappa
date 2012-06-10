@@ -39,6 +39,11 @@ sub new {
 
 sub create {
     my ($self, $table_name) = @_;
+    return $self->model($table_name);
+}
+
+sub model {
+    my ($self, $table_name) = @_;
     if( defined $self->table_namespace ) {
         my $table_class = $self->table_namespace . "::$table_name";
         if( Class::Load::load_optional_class($table_class) ) {
@@ -52,6 +57,7 @@ sub create {
     }
     return Kappa->new($self->dbh, $self->options);
 }
+
 
 sub row_object_enable {
     my ($self, $row_object_enable) = @_;
@@ -243,6 +249,8 @@ available options are as follows.
       table_namespace => 'MyProj::Table',
   });
 
+=head2 model($table_name)
+
 =head2 create($table_name)
 
 create instance for defined table class. if table class for $table_name is not found, 
@@ -251,10 +259,12 @@ return default class.
   my $db = Kappa->new($dbh, {
       table_namespace => 'MyProj::Table',
   });
-  my $db_for_order = $db->create('Order'); #return table MyProj::Table::Order table class(if defined)
+  my $db_for_order = $db->model('Order'); #return table MyProj::Table::Order table class(if defined)
 
 In this case, Instance of MyProj::Table::Order will be returned. If MyProj::Table::Order is not defined, 
 return MyProj::Table instance if defiend MyProj::Table and if not defined both of them, return Kappa instance.
+
+create() is alias for model() method. and create() method is deprecated, removed in future release.
 
 =head2 row_object_enable($status)
 
