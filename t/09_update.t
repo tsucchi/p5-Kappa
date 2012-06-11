@@ -9,7 +9,16 @@ use Kappa;
 my $dbh = prepare_dbh();
 prepare_testdata($dbh);
 
-subtest 'update', sub {
+subtest 'update (normal)', sub {
+    my $db = Kappa->new($dbh);
+    $db->insert('TEST', { id => 122, value => 'aaa' });
+    $db->update('TEST', { value => 'bbb' }, { id => 122 });
+    my $row = $db->select('TEST', { id => 122 });
+    ok( defined $row );
+    is( $row->value, 'bbb');
+};
+
+subtest 'update using table class', sub {
     my $db_for_test = db_for_test($dbh);
     $db_for_test->insert('TEST', { id => 123, value => 'aaa' });
     $db_for_test->update('TEST', { value => 'bbb' }, { id => 123 });

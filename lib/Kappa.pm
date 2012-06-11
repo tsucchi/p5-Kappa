@@ -165,7 +165,7 @@ sub insert { #override
         return $self->SUPER::insert($self->table_name, $values);
     }
     my ($table_name, $values) = @_;
-    return $self->SUPER::insert($self->table_name, $values);
+    return $self->SUPER::insert($table_name, $values);
 }
 
 sub insert_multi { #override
@@ -175,7 +175,7 @@ sub insert_multi { #override
         return $self->SUPER::insert_multi($self->table_name, @args);
     }
     my ($table_name, @args) = @_;
-    return $self->SUPER::insert_multi($self->table_name, @args);
+    return $self->SUPER::insert_multi($table_name, @args);
 }
 
 sub update { #override
@@ -185,7 +185,7 @@ sub update { #override
         return $self->SUPER::update($self->table_name, $set, $where);
     }
     my ($table_name, $set, $where) = @_;
-    return $self->SUPER::update($self->table_name, $set, $where);
+    return $self->SUPER::update($table_name, $set, $where);
 }
 
 sub delete { #override
@@ -195,7 +195,7 @@ sub delete { #override
         return $self->SUPER::delete($self->table_name, $where);
     }
     my ($table_name, $where) = @_;
-    return $self->SUPER::delete($self->table_name, $where);
+    return $self->SUPER::delete($table_name, $where);
 }
 
 

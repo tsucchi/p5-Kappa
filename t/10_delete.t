@@ -9,7 +9,15 @@ use Kappa;
 my $dbh = prepare_dbh();
 prepare_testdata($dbh);
 
-subtest 'delete', sub {
+subtest 'delete (normal)', sub {
+    my $db = Kappa->new($dbh);
+    $db->insert('TEST', { id => 123, value => 'aaa' });
+    $db->delete('TEST', { id => 123 });
+    my $row = $db->select('TEST', { id => 123 });
+    ok( !defined $row );
+};
+
+subtest 'delete using table class', sub {
     my $db_for_test = db_for_test($dbh);
     $db_for_test->insert('TEST', { id => 123, value => 'aaa' });
     $db_for_test->delete('TEST', { id => 123 });
