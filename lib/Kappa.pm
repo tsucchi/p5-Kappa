@@ -468,6 +468,15 @@ if table class is defined and select is called from table class, parameter $tabl
   my $row = $db_for_sometable->update({ value => 'aaa' }, { id => 123 }); #omit $table_name
 
 
+=head2 execute_query($sql, \@binds)
+
+run sql statement and returns statement handler($sth)
+
+=head2 execute_query_named($sql, $params_href)
+
+run sql statement with named placeholder and returns statement handler($sth)
+
+
 =head1 DEFINE CUSTOMIZED ROW CLASS
 
 You can define Row class specified in specified in row_namespace at new(). for example, define MyProj::Row::Order like this,
