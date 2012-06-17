@@ -9,6 +9,7 @@ use Class::Accessor::Lite (
 use Kappa::Row;
 use Class::Load qw();
 use Scope::Guard;
+use Carp qw();
 
 sub new {
     my ($class, $dbh, $option_href) = @_;
@@ -39,6 +40,7 @@ sub new {
 
 sub create {
     my ($self, $table_name) = @_;
+    Carp::carp "create() is deprecated use model() instead\n";
     return $self->model($table_name);
 }
 
