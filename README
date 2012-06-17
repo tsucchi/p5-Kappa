@@ -81,7 +81,7 @@ METHODS FROM PARENT CLASS(SQL::Executor)
     parameter $table_name is optional. like this,
 
       my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
-      my $db_for_sometable = $db->create('SOME_TABLE');
+      my $db_for_sometable = $db->model('SOME_TABLE');
       my @rows1 = $db_for_sometable->select({ value => 'aaa' }); #omit $table_name
       my @rows2 = $db_for_sometable->select('SOME_TABLE', { value => 'aaa' }); #you can also specify table name
 
@@ -96,7 +96,7 @@ METHODS FROM PARENT CLASS(SQL::Executor)
     parameter $table_name is optional. like this,
 
       my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
-      my $db_for_sometable = $db->create('SOME_TABLE');
+      my $db_for_sometable = $db->model('SOME_TABLE');
       my $row1 = $db_for_sometable->select_row({ value => 'aaa' }); #omit $table_name
       my $row2 = $db_for_sometable->select_row('SOME_TABLE', { value => 'aaa' }); #you can also specify table name
 
@@ -107,7 +107,7 @@ METHODS FROM PARENT CLASS(SQL::Executor)
     parameter $table_name is optional. like this,
 
       my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
-      my $db_for_sometable = $db->create('SOME_TABLE');
+      my $db_for_sometable = $db->model('SOME_TABLE');
       my @rows1 = $db_for_sometable->select_all({ value => 'aaa' }); #omit $table_name
       my @rows2 = $db_for_sometable->select_all('SOME_TABLE', { value => 'aaa' }); #you can also specify table name
 
@@ -125,7 +125,7 @@ METHODS FROM PARENT CLASS(SQL::Executor)
     parameter $table_name is optional. like this,
 
       my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
-      my $db_for_sometable = $db->create('SOME_TABLE');
+      my $db_for_sometable = $db->model('SOME_TABLE');
       my $itr1 = $db_for_sometable->select_itr({ value => 'aaa' }); #omit $table_name
       my $itr2 = $db_for_sometable->select_itr('SOME_TABLE', { value => 'aaa' }); #you can also specify table name
 
@@ -203,7 +203,7 @@ METHODS FROM PARENT CLASS(SQL::Executor)
     parameter $table_name is optional. like this,
 
       my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
-      my $db_for_sometable = $db->create('SOME_TABLE');
+      my $db_for_sometable = $db->model('SOME_TABLE');
       my $row = $db_for_sometable->insert({ id => 123, value => 'aaa' }); #omit $table_name
 
   insert_multi($table_name, @args)
@@ -214,7 +214,7 @@ METHODS FROM PARENT CLASS(SQL::Executor)
     parameter $table_name is optional. like this,
 
       my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
-      my $db_for_sometable = $db->create('SOME_TABLE');
+      my $db_for_sometable = $db->model('SOME_TABLE');
       my $row = $db_for_sometable->insert_multi({ id => 123, value => 'aaa' }, { id => 124, value => 'bbb' }); #omit $table_name
 
   delete($table_name, $where)
@@ -224,7 +224,7 @@ METHODS FROM PARENT CLASS(SQL::Executor)
     parameter $table_name is optional. like this,
 
       my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
-      my $db_for_sometable = $db->create('SOME_TABLE');
+      my $db_for_sometable = $db->model('SOME_TABLE');
       my $row = $db_for_sometable->delete({ id => 123 }); #omit $table_name
 
   update($table_name, $set, $where)
@@ -234,7 +234,7 @@ METHODS FROM PARENT CLASS(SQL::Executor)
     parameter $table_name is optional. like this,
 
       my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
-      my $db_for_sometable = $db->create('SOME_TABLE');
+      my $db_for_sometable = $db->model('SOME_TABLE');
       my $row = $db_for_sometable->update({ value => 'aaa' }, { id => 123 }); #omit $table_name
 
 DEFINE CUSTOMIZED ROW CLASS
@@ -283,7 +283,7 @@ DEFINE CUSTOMIZED TABLE CLASS
     using this table class like this,
 
       my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table' });
-      my $db_for_order = $db->create('Order');
+      my $db_for_order = $db->model('Order');
       my @rows = $db_for_order->select_using_very_complex_sql($condition_href);
 
 How to use Transaction.
