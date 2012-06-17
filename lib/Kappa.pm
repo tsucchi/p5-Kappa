@@ -432,7 +432,7 @@ if table class is defined and select is called from table class, parameter $tabl
 
   my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
   my $db_for_sometable = $db->create('SOME_TABLE');
-  my $row = $db_for_sometable->insert({ id => 123, value => 'aaa' }); #omit $table_name
+  $db_for_sometable->insert({ id => 123, value => 'aaa' }); #omit $table_name
 
 
 =head2 insert_multi($table_name, @args)
@@ -443,7 +443,7 @@ if table class is defined and select is called from table class, parameter $tabl
 
   my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
   my $db_for_sometable = $db->create('SOME_TABLE');
-  my $row = $db_for_sometable->insert_multi({ id => 123, value => 'aaa' }, { id => 124, value => 'bbb' }); #omit $table_name
+  $db_for_sometable->insert_multi({ id => 123, value => 'aaa' }, { id => 124, value => 'bbb' }); #omit $table_name
 
 
 =head2 delete($table_name, $where)
@@ -454,7 +454,7 @@ if table class is defined and select is called from table class, parameter $tabl
 
   my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
   my $db_for_sometable = $db->create('SOME_TABLE');
-  my $row = $db_for_sometable->delete({ id => 123 }); #omit $table_name
+  $db_for_sometable->delete({ id => 123 }); #omit $table_name
 
 
 =head2 update($table_name, $set, $where)
@@ -465,7 +465,7 @@ if table class is defined and select is called from table class, parameter $tabl
 
   my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
   my $db_for_sometable = $db->create('SOME_TABLE');
-  my $row = $db_for_sometable->update({ value => 'aaa' }, { id => 123 }); #omit $table_name
+  $db_for_sometable->update({ value => 'aaa' }, { id => 123 }); #omit $table_name
 
 
 =head2 execute_query($sql, \@binds)
