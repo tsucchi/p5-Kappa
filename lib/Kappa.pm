@@ -296,7 +296,7 @@ return one Row object if scalar context is expected, or in array context, return
 if table class is defined and select is called from table class, parameter $table_name is optional. like this, 
 
   my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
-  my $db_for_sometable = $db->create('SOME_TABLE');
+  my $db_for_sometable = $db->model('SOME_TABLE');
   my @rows1 = $db_for_sometable->select({ value => 'aaa' }); #omit $table_name
   my @rows2 = $db_for_sometable->select('SOME_TABLE', { value => 'aaa' }); #you can also specify table name 
 
@@ -310,7 +310,7 @@ return one Row object. if found more than one row, return the first one.
 if table class is defined and select is called from table class, parameter $table_name is optional. like this, 
 
   my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
-  my $db_for_sometable = $db->create('SOME_TABLE');
+  my $db_for_sometable = $db->model('SOME_TABLE');
   my $row1 = $db_for_sometable->select_row({ value => 'aaa' }); #omit $table_name
   my $row2 = $db_for_sometable->select_row('SOME_TABLE', { value => 'aaa' }); #you can also specify table name 
 
@@ -322,7 +322,7 @@ return array of Row objects.
 if table class is defined and select is called from table class, parameter $table_name is optional. like this, 
 
   my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
-  my $db_for_sometable = $db->create('SOME_TABLE');
+  my $db_for_sometable = $db->model('SOME_TABLE');
   my @rows1 = $db_for_sometable->select_all({ value => 'aaa' }); #omit $table_name
   my @rows2 = $db_for_sometable->select_all('SOME_TABLE', { value => 'aaa' }); #you can also specify table name 
 
@@ -340,7 +340,7 @@ return iterator that contains Row object. Iterator is instance of L<SQL::Executo
 if table class is defined and select is called from table class, parameter $table_name is optional. like this, 
 
   my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
-  my $db_for_sometable = $db->create('SOME_TABLE');
+  my $db_for_sometable = $db->model('SOME_TABLE');
   my $itr1 = $db_for_sometable->select_itr({ value => 'aaa' }); #omit $table_name
   my $itr2 = $db_for_sometable->select_itr('SOME_TABLE', { value => 'aaa' }); #you can also specify table name 
 
@@ -431,7 +431,7 @@ execute INSERT statment. return value is nothing.
 if table class is defined and select is called from table class, parameter $table_name is optional. like this, 
 
   my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
-  my $db_for_sometable = $db->create('SOME_TABLE');
+  my $db_for_sometable = $db->model('SOME_TABLE');
   my $row = $db_for_sometable->insert({ id => 123, value => 'aaa' }); #omit $table_name
 
 
@@ -442,7 +442,7 @@ execute bulk insert using L<SQL::Maker>'s insert_multi. return value is nothing.
 if table class is defined and select is called from table class, parameter $table_name is optional. like this, 
 
   my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
-  my $db_for_sometable = $db->create('SOME_TABLE');
+  my $db_for_sometable = $db->model('SOME_TABLE');
   my $row = $db_for_sometable->insert_multi({ id => 123, value => 'aaa' }, { id => 124, value => 'bbb' }); #omit $table_name
 
 
@@ -453,7 +453,7 @@ execute DELETE statment. return value is nothing.
 if table class is defined and select is called from table class, parameter $table_name is optional. like this, 
 
   my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
-  my $db_for_sometable = $db->create('SOME_TABLE');
+  my $db_for_sometable = $db->model('SOME_TABLE');
   my $row = $db_for_sometable->delete({ id => 123 }); #omit $table_name
 
 
@@ -464,7 +464,7 @@ execute UPDATE statment. return value is nothing.
 if table class is defined and select is called from table class, parameter $table_name is optional. like this, 
 
   my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
-  my $db_for_sometable = $db->create('SOME_TABLE');
+  my $db_for_sometable = $db->model('SOME_TABLE');
   my $row = $db_for_sometable->update({ value => 'aaa' }, { id => 123 }); #omit $table_name
 
 
@@ -513,7 +513,7 @@ You can also define Table class specified in table_namespace at new(). for examp
 using this table class like this,
 
   my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table' });
-  my $db_for_order = $db->create('Order');
+  my $db_for_order = $db->model('Order');
   my @rows = $db_for_order->select_using_very_complex_sql($condition_href);
 
 
