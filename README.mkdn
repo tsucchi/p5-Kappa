@@ -223,7 +223,7 @@ if table class is defined and select is called from table class, parameter $tabl
 
     my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
     my $db_for_sometable = $db->create('SOME_TABLE');
-    my $row = $db_for_sometable->insert({ id => 123, value => 'aaa' }); #omit $table_name
+    $db_for_sometable->insert({ id => 123, value => 'aaa' }); #omit $table_name
 
 
 
@@ -235,7 +235,7 @@ if table class is defined and select is called from table class, parameter $tabl
 
     my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
     my $db_for_sometable = $db->create('SOME_TABLE');
-    my $row = $db_for_sometable->insert_multi({ id => 123, value => 'aaa' }, { id => 124, value => 'bbb' }); #omit $table_name
+    $db_for_sometable->insert_multi({ id => 123, value => 'aaa' }, { id => 124, value => 'bbb' }); #omit $table_name
 
 
 
@@ -247,7 +247,7 @@ if table class is defined and select is called from table class, parameter $tabl
 
     my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
     my $db_for_sometable = $db->create('SOME_TABLE');
-    my $row = $db_for_sometable->delete({ id => 123 }); #omit $table_name
+    $db_for_sometable->delete({ id => 123 }); #omit $table_name
 
 
 
@@ -259,7 +259,17 @@ if table class is defined and select is called from table class, parameter $tabl
 
     my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
     my $db_for_sometable = $db->create('SOME_TABLE');
-    my $row = $db_for_sometable->update({ value => 'aaa' }, { id => 123 }); #omit $table_name
+    $db_for_sometable->update({ value => 'aaa' }, { id => 123 }); #omit $table_name
+
+
+
+## execute\_query($sql, \\@binds)
+
+run sql statement and returns statement handler($sth)
+
+## execute\_query\_named($sql, $params\_href)
+
+run sql statement with named placeholder and returns statement handler($sth)
 
 
 
