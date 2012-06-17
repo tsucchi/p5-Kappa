@@ -2,6 +2,10 @@ Revision history for Perl extension Kappa
 0.04    2012/06/17
         - create() is deprecated. when it is used, warning message is raised.
         - add row_value() and get_columns() in Kappa::Row
+        - POD bug fix: insert/update/delete/insert_multi does not return any row.
+        - add document for execute_query/execute_query_named these methods are already available
+          but not documented.
+        - add dependency to SQL::Executor 0.02, execute_query_named is available since this version
 
 0.03    2012/06/11
         - fix: insert/update/delete does not work when table class is not used.
