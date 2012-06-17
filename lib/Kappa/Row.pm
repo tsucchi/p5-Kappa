@@ -31,6 +31,18 @@ sub db {
     return $self->{db};
 }
 
+sub row_value {
+    my ($self) = @_;
+    return %{ $self->{row_value} || {} };
+}
+
+sub get_columns {
+    my ($self) = @_;
+    my %value = $self->row_value;
+    return \%value;
+}
+
+
 # define accessor for row values.
 sub AUTOLOAD {
     my ($self) = @_;
@@ -78,6 +90,19 @@ create instance.
 return caller ORM(Kappa or its subclass)
 
 =cut
+
+=head2 row_value()
+
+get row value as hash
+
+=cut
+
+=head2 get_columns()
+
+get row value as hash ref
+
+=cut
+
 
 =head1 AUTHOR
 

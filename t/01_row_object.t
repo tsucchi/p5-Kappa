@@ -31,6 +31,13 @@ subtest 'default row object', sub {
     is( $row->id, 1);
     is( $row->value, 'aaa');
     is( $row->table_name, 'TEST');
+    my %row_value = $row->row_value;
+    my $expected_row_value = {
+        id    => 1,
+        value => 'aaa',
+    };
+    is_deeply( $row->get_columns, $expected_row_value );
+    is_deeply( \%row_value,       $expected_row_value );
 };
 
 subtest 'customized row object(global)', sub {
@@ -43,6 +50,14 @@ subtest 'customized row object(global)', sub {
     is( $row->value, 'aaa');
     is( $row->aaa,   'aaa');
     is( $row->table_name, 'TEST2');
+
+    my %row_value = $row->row_value;
+    my $expected_row_value = {
+        id    => 1,
+        value => 'aaa',
+    };
+    is_deeply( $row->get_columns, $expected_row_value );
+    is_deeply( \%row_value,       $expected_row_value );
 };
 
 subtest 'customized row object(each table)', sub {
@@ -55,6 +70,15 @@ subtest 'customized row object(each table)', sub {
     is( $row->value, 'aaa');
     is( $row->aaa,   'aaa');
     is( $row->table_name, 'TEST');
+
+    my %row_value = $row->row_value;
+    my $expected_row_value = {
+        id    => 1,
+        value => 'aaa',
+    };
+    is_deeply( $row->get_columns, $expected_row_value );
+    is_deeply( \%row_value,       $expected_row_value );
+
 };
 
 
