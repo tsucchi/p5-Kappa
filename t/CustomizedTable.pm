@@ -10,7 +10,7 @@ sub db_for_test {
     my $db = Kappa->new($dbh, {
         table_namespace => 'CustomizedTable',
     });
-    return $db->create('TEST');
+    return $db->model('TEST');
 }
 
 {
