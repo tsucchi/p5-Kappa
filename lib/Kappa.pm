@@ -5,11 +5,13 @@ use warnings;
 our $VERSION = '0.05';
 use Class::Accessor::Lite (
     ro => ['dbh', 'row_namespace', 'table_namespace', 'options', 'table_name'],
+    rw => ['id_generator'],
 );
 use Kappa::Row;
 use Class::Load qw();
 use Scope::Guard;
 use Carp qw();
+use Data::UUID;
 
 sub new {
     my ($class, $dbh, $option_href) = @_;
@@ -200,6 +202,13 @@ sub delete { #override
     return $self->SUPER::delete($table_name, $where);
 }
 
+sub select_id { #override
+    my ($self) = @_;
+    if( !defined $self->id_generator ) {
+        $self->id_generator( Data::UUID->new() );
+    }
+    return $self->id_generator->create_str;
+}
 
 sub _is_table_name_omit {
     my ($self, $arg0) = @_;
