@@ -10,6 +10,7 @@ requires 'SQL::Executor' => '0.11';
 requires 'Class::Load';
 requires 'Scope::Guard';
 recommends 'Class::Load::XS';
+requires 'Data::UUID';
 
 tests 't/*.t';
 author_tests 'xt';
