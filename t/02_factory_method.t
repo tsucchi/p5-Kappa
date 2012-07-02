@@ -17,7 +17,7 @@ subtest 'default instance', sub {
     my $db = Kappa->new($dbh);
     my $db_for_aaa = $db->model('AAA');
     is( ref $db_for_aaa, 'Kappa');
-    is( $db_for_aaa->table_name, undef);
+    is( $db_for_aaa->table_name, 'AAA');
 };
 
 subtest 'specify table class namespace(using model method)', sub {
@@ -26,7 +26,7 @@ subtest 'specify table class namespace(using model method)', sub {
     });
     my $db_for_aaa = $db->model('AAA');
     is( ref $db_for_aaa, 'CustomizedTable');
-    is( $db_for_aaa->table_name, undef);
+    is( $db_for_aaa->table_name, 'AAA');
 
     my $db_for_test = $db->model('TEST');
     is( ref $db_for_test, 'CustomizedTable::TEST');

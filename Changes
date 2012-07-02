@@ -1,4 +1,7 @@
 Revision history for Perl extension Kappa
+0.05    2012/07/02
+        - table name is set when model() called and table class is not found.
+
 0.04    2012/06/17
         - create() is deprecated. when it is used, warning message is raised.
         - add row_value() and get_columns() in Kappa::Row

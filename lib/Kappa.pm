@@ -48,18 +48,20 @@ sub create {
 
 sub model {
     my ($self, $table_name) = @_;
+    my %options = %{ $self->options || {} };
+    $options{table_name} = $table_name;
+
     if( defined $self->table_namespace ) {
         my $table_class = $self->table_namespace . "::$table_name";
+
         if( Class::Load::load_optional_class($table_class) ) {
-            my %options = %{ $self->options || {} };
-            $options{table_name} = $table_name;
             return $table_class->new($self->dbh, \%options);
         }
         if( Class::Load::load_optional_class($self->table_namespace) ) {
-            return $self->table_namespace->new($self->dbh, $self->options);
+            return $self->table_namespace->new($self->dbh, \%options);
         }
     }
-    return Kappa->new($self->dbh, $self->options);
+    return Kappa->new($self->dbh, \%options);
 }
 
 
