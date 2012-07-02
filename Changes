@@ -1,6 +1,7 @@
 Revision history for Perl extension Kappa
 0.05    2012/07/02
         - table name is set when model() called and table class is not found.
+        - remove create() method. please use model() instead.
 
 0.04    2012/06/17
         - create() is deprecated. when it is used, warning message is raised.

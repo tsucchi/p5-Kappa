@@ -40,12 +40,6 @@ sub new {
     bless $self, $class;
 }
 
-sub create {
-    my ($self, $table_name) = @_;
-    Carp::carp "create() is deprecated use model() instead\n";
-    return $self->model($table_name);
-}
-
 sub model {
     my ($self, $table_name) = @_;
     my %options = %{ $self->options || {} };
@@ -264,8 +258,6 @@ available options are as follows.
 
 =head2 model($table_name)
 
-=head2 create($table_name)
-
 create instance for defined table class. if table class for $table_name is not found, 
 return default class.
 
@@ -277,7 +269,6 @@ return default class.
 In this case, Instance of MyProj::Table::Order will be returned. If MyProj::Table::Order is not defined, 
 return MyProj::Table instance if defiend MyProj::Table and if not defined both of them, return Kappa instance.
 
-create() is alias for model() method. and create() method is deprecated, removed in future release.
 
 =head2 row_object_enable($status)
 
