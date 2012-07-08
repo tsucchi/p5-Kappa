@@ -1,5 +1,6 @@
-steps = FindVersion, ChangeVersion, CheckChangeLog, DistTest, Commit, Tag, MakeDist
+steps = FindVersion, ChangeVersion, CheckChangeLog, DistTest, Commit, Tag, MakeDist, Copy
 
 git.tagpattern = rel-%v
 git.push_to = origin
+copy.dir = ~/Dropbox/Public/Kappa
 
