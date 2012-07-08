@@ -16,6 +16,7 @@ use Data::UUID;
 sub new {
     my ($class, $dbh, $option_href) = @_;
     my $self = $class->SUPER::new($dbh, {
+        %{ $option_href || {} },
         callback => sub {
             my ($self, $row, $table_name, $select_id) = @_;
             if( defined $self->row_namespace ) {
