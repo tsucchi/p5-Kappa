@@ -26,12 +26,14 @@ available options are as follows.
 
 - row\_namespace   (string, default 'Kappa::Row') :  namespace for row object.
 - table\_namespace (string, default 'Kappa')      :  namespace for table class.
+- iterator\_namespace (string, default 'Kappa::Iterator') :  namespace for iterator.
 - row\_object\_enable (BOOL, default 1(TRUE))      :  Row object is generated or not
 
     my $dbh = DBI->connect($dsn, $user, $pass);
     my $db = Kappa->new($dbh, {
-        row_namespace   => 'MyProj::Row',
-        table_namespace => 'MyProj::Table',
+        row_namespace      => 'MyProj::Row',
+        table_namespace    => 'MyProj::Table',
+        iterator_namespace => 'MyProj::Iterator',
     });
 
 ## model($table\_name)
@@ -63,8 +65,8 @@ enable or disable making row object. if return value is required, this value is 
 
 # METHODS FROM PARENT CLASS(SQL::Executor)
 
-folowing methods are delived from [SQL::Executor](http://search.cpan.org/perldoc?SQL::Executor). Methods named select\*\_itr return Iterator using SQL::Executor::Iterator, 
-and other select\* methods return Row object(Kappa::Row or child of the one).
+folowing methods are delived from [SQL::Executor](http://search.cpan.org/perldoc?SQL::Executor). Methods named select\*\_itr return Iterator using Kappa::Iterator(by default
+it is the same as SQL::Executor::Iterator), and other select\* methods return Row object(Kappa::Row or child of the one).
 
 ## select($table\_name, $where, $option)
 
@@ -316,6 +318,33 @@ using this table class like this,
     my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table' });
     my $db_for_order = $db->model('Order');
     my @rows = $db_for_order->select_using_very_complex_sql($condition_href);
+
+# DEFINE CUSTOMIZED ITERATOR
+
+You can also define iterator class specified in iterator\_namespace at new(). for example, define MyProj::Iterator::Order like this,
+
+    package MyProj::Iterator::Order;
+    use parent qw(Kappa::Iterator);
+    use strict;
+    use warnings;
+
+    sub sum_price {
+        my($self) = @_;
+        my $result = 0;
+        while ( my $row = $self->next ) {
+            $result += $row->price;
+        }
+        return $result;
+    }
+
+using this iterator like this,
+
+    my $db = Kappa->new($dbh, { iterator_namespace => 'MyProj::Iterator' });
+    my $db_for_order = $db->model('Order');
+    my $itr = $db_for_select->some_order(...);
+    my $sum_price = $itr->sum_price();
+
+
 
 
 
