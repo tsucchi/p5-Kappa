@@ -1,5 +1,6 @@
 Revision history for Perl extension Kappa
-0.08
+0.08    2012/07/31
+        - new feature: customizable iterator provided. please see 'DEFINE CUSTOMIZED ITERATOR' section in POD.
 
 0.07    2012/07/31
         - fix: select_*named failed when row_namespace is specified and table_name is undefined.
