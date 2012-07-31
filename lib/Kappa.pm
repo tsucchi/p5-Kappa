@@ -4,10 +4,11 @@ use strict;
 use warnings;
 our $VERSION = '0.08';
 use Class::Accessor::Lite (
-    ro => ['dbh', 'row_namespace', 'table_namespace', 'options', 'table_name'],
+    ro => ['dbh', 'row_namespace', 'iterator_namespace', 'table_namespace', 'options', 'table_name'],
     rw => ['id_generator'],
 );
 use Kappa::Row;
+use Kappa::Iterator;
 use Class::Load qw();
 use Scope::Guard;
 use Carp qw();
@@ -32,10 +33,11 @@ sub new {
         },
     });
 
-    $self->{row_namespace}     = $option_href->{row_namespace};
-    $self->{table_namespace}   = $option_href->{table_namespace};
-    $self->{table_name}        = $option_href->{table_name};
-    $self->{row_object_enable} = defined $option_href->{row_object_enable} ? $option_href->{row_object_enable} : 1;
+    $self->{row_namespace}      = $option_href->{row_namespace};
+    $self->{iterator_namespace} = $option_href->{iterator_namespace};
+    $self->{table_namespace}    = $option_href->{table_namespace};
+    $self->{table_name}         = $option_href->{table_name};
+    $self->{row_object_enable}  = defined $option_href->{row_object_enable} ? $option_href->{row_object_enable} : 1;
 
     $self->{options} = $option_href;
     bless $self, $class;
@@ -125,9 +127,27 @@ sub select_all_by_sql { #override
 
 sub select_itr_by_sql { #override
     my ($self, $sql, $params_aref, $table_name) = @_;
-    return $self->SUPER::select_itr_by_sql($sql, $params_aref, $table_name) if ( defined $table_name && $table_name ne '' );
-    return $self->SUPER::select_itr_by_sql($sql, $params_aref, $self->table_name);
+    return $self->_select_itr_by_sql($sql, $params_aref, $table_name) if ( defined $table_name && $table_name ne '' );
+    return $self->_select_itr_by_sql($sql, $params_aref, $self->table_name);
 }
+
+sub _select_itr_by_sql {
+    my ($self, $sql, $binds_aref, $table_name) = @_;
+    my $sth = $self->execute_query($sql, $binds_aref || []);
+    my $select_id = defined $self->callback ? $self->select_id : undef; #select_id does not need if callback is disabled.
+
+    if( defined $table_name && defined $self->iterator_namespace ) {
+        my $iterator_class = $self->iterator_namespace . "::$table_name";
+        if( Class::Load::load_optional_class($iterator_class) ) {
+            return $iterator_class->new($sth, $table_name, $self, $select_id);
+        }
+        if ( Class::Load::load_optional_class($self->row_namespace) ) {
+            return $self->iterator_namespace->new($sth, $table_name, $self, $select_id);
+        }
+    }
+    return Kappa::Iterator->new($sth, $table_name, $self, $select_id);
+}
+
 
 sub select_row_with_fields { #override
     my $self = shift;
@@ -247,14 +267,17 @@ available options are as follows.
 
 =item * table_namespace (string, default 'Kappa')      :  namespace for table class.
 
+=item * iterator_namespace (string, default 'Kappa::Iterator') :  namespace for iterator.
+
 =item * row_object_enable (BOOL, default 1(TRUE))      :  Row object is generated or not
 
 =back
 
   my $dbh = DBI->connect($dsn, $user, $pass);
   my $db = Kappa->new($dbh, {
-      row_namespace   => 'MyProj::Row',
-      table_namespace => 'MyProj::Table',
+      row_namespace      => 'MyProj::Row',
+      table_namespace    => 'MyProj::Table',
+      iterator_namespace => 'MyProj::Iterator',
   });
 
 =head2 model($table_name)
@@ -285,8 +308,8 @@ enable or disable making row object. if return value is required, this value is 
 
 =head1 METHODS FROM PARENT CLASS(SQL::Executor)
 
-folowing methods are delived from L<SQL::Executor>. Methods named select*_itr return Iterator using SQL::Executor::Iterator, 
-and other select* methods return Row object(Kappa::Row or child of the one).
+folowing methods are delived from L<SQL::Executor>. Methods named select*_itr return Iterator using Kappa::Iterator(by default
+it is the same as SQL::Executor::Iterator), and other select* methods return Row object(Kappa::Row or child of the one).
 
 =head2 select($table_name, $where, $option)
 
@@ -526,6 +549,32 @@ using this table class like this,
   my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table' });
   my $db_for_order = $db->model('Order');
   my @rows = $db_for_order->select_using_very_complex_sql($condition_href);
+
+=head1 DEFINE CUSTOMIZED ITERATOR
+
+You can also define iterator class specified in iterator_namespace at new(). for example, define MyProj::Iterator::Order like this,
+
+  package MyProj::Iterator::Order;
+  use parent qw(Kappa::Iterator);
+  use strict;
+  use warnings;
+
+  sub sum_price {
+      my($self) = @_;
+      my $result = 0;
+      while ( my $row = $self->next ) {
+          $result += $row->price;
+      }
+      return $result;
+  }
+
+using this iterator like this,
+
+  my $db = Kappa->new($dbh, { iterator_namespace => 'MyProj::Iterator' });
+  my $db_for_order = $db->model('Order');
+  my $itr = $db_for_select->some_order(...);
+  my $sum_price = $itr->sum_price();
+
 
 
 =head1 How to use Transaction.

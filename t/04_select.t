@@ -53,6 +53,7 @@ subtest 'select_itr', sub {
     is( $row->value, 'aaa');
 
     $itr = $db_for_test->select_itr('TEST', $condition, $option);
+    is( ref $itr, 'Kappa::Iterator');
     $row = $itr->next;
     ok( defined $row );
     is( $row->value, 'aaa');
