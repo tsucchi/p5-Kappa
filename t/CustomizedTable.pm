@@ -25,4 +25,10 @@ sub db_for_test {
     sub yyy { return 'yyy' }
 }
 
+{
+    package CustomizedRow;
+    our @ISA = qw(Kappa::Row);
+    sub aaa { return 'aaa' }
+}
+
 1;

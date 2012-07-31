@@ -21,6 +21,15 @@ subtest 'select_named', sub {
     is( $row->table_name, 'TEST');
 };
 
+subtest 'select_named with row class', sub {
+    my $db = Kappa->new($dbh, { row_namespace => 'CustomizedRow' });
+    is( $db->table_name, undef);
+    my $row = $db->select_named($sql, $condition);
+    ok( defined $row );
+    is( $row->value, 'aaa');
+};
+
+
 subtest 'select_row_named', sub {
     my $db_for_test = db_for_test($dbh);
     is( $db_for_test->table_name, 'TEST');

@@ -19,7 +19,7 @@ sub new {
         %{ $option_href || {} },
         callback => sub {
             my ($self, $row, $table_name, $select_id) = @_;
-            if( defined $self->row_namespace ) {
+            if( defined $table_name && defined $self->row_namespace ) {
                 my $row_class = $self->row_namespace . "::$table_name";
                 if( Class::Load::load_optional_class($row_class) ) {
                     return $row_class->new($row, $self, $table_name);
