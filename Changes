@@ -1,6 +1,7 @@
 Revision history for Perl extension Kappa
 0.09    2012/08/01
         - fix: iterator for namespace class is not returned.
+        - documentation fix for iterator.
 
 0.08    2012/07/31
         - new feature: customizable iterator provided. please see 'DEFINE CUSTOMIZED ITERATOR' section in POD.
