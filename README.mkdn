@@ -112,7 +112,7 @@ if table class is defined and select is called from table class, parameter $tabl
 
 ## select\_itr($table\_name, $where, $option)
 
-return iterator that contains Row object. Iterator is instance of [SQL::Executor::Iterator](http://search.cpan.org/perldoc?SQL::Executor::Iterator)
+return iterator that contains Row object. Iterator is instance of [Kappa::Iterator](http://search.cpan.org/perldoc?Kappa::Iterator)
 
     my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
     my $itr = $db->select_itr({ value => 'aaa' });
@@ -344,7 +344,8 @@ using this iterator like this,
     my $itr = $db_for_select->some_order(...);
     my $sum_price = $itr->sum_price();
 
-
+If MyProj::Iterator::Order is not defined, instance of MyProj::Iterator will be returned. And if MyProj::Iterator is not
+defined, Kappa::Iterator will be returned.
 
 
 

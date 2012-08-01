@@ -117,7 +117,7 @@ if table class is defined and select is called from table class, parameter $tabl
 
 =head2 select_itr($table_name, $where, $option)
 
-return iterator that contains Row object. Iterator is instance of L<SQL::Executor::Iterator>
+return iterator that contains Row object. Iterator is instance of L<Kappa::Iterator>
 
   my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
   my $itr = $db->select_itr({ value => 'aaa' });
@@ -338,6 +338,8 @@ using this iterator like this,
   my $itr = $db_for_select->some_order(...);
   my $sum_price = $itr->sum_price();
 
+If MyProj::Iterator::Order is not defined, instance of MyProj::Iterator will be returned. And if MyProj::Iterator is not
+defined, Kappa::Iterator will be returned.
 
 
 =head1 How to use Transaction.

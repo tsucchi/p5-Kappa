@@ -114,7 +114,7 @@ METHODS FROM PARENT CLASS(SQL::Executor)
 
   select_itr($table_name, $where, $option)
     return iterator that contains Row object. Iterator is instance of
-    SQL::Executor::Iterator
+    Kappa::Iterator
 
       my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
       my $itr = $db->select_itr({ value => 'aaa' });
@@ -318,6 +318,10 @@ DEFINE CUSTOMIZED ITERATOR
       my $db_for_order = $db->model('Order');
       my $itr = $db_for_select->some_order(...);
       my $sum_price = $itr->sum_price();
+
+    If MyProj::Iterator::Order is not defined, instance of MyProj::Iterator
+    will be returned. And if MyProj::Iterator is not defined,
+    Kappa::Iterator will be returned.
 
 How to use Transaction.
     You can use DBI's transaction (begin_work and commit).
