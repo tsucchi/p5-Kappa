@@ -60,6 +60,20 @@ subtest 'customized row object(global)', sub {
     is_deeply( \%row_value,       $expected_row_value );
 };
 
+subtest 'table name is set in db called from row object', sub {
+    my $db = Kappa->new($dbh, {
+        row_namespace => 'CustomizedRow',
+    });
+    my $row = $db->select_row('TEST2', $condition, $option);
+    is( $row->table_name, 'TEST2');
+    my $new_row = $row->db->select_row($condition, $option); #returned same row
+
+    ok( $row->isa('CustomizedRow') );
+    is( $row->id, 1);
+    is( $row->value, 'aaa');
+    is( $row->aaa,   'aaa');
+};
+
 subtest 'customized row object(each table)', sub {
     my $db = Kappa->new($dbh, {
         row_namespace => 'CustomizedRow',

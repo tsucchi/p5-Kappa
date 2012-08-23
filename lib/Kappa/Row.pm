@@ -28,7 +28,8 @@ sub table_name {
 
 sub db {
     my ($self) = @_;
-    return $self->{db};
+    my $db = $self->{db};
+    return $db->model($self->table_name);
 }
 
 sub row_value {
