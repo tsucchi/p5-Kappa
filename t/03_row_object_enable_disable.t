@@ -96,5 +96,27 @@ subtest 'nested guard', sub {
 
 };
 
+subtest 'nested guard with model', sub {
+    my $db = Kappa->new($dbh);
+    my $row = $db->model('Test')->select_row($condition, $option);
+    ok( $row->isa('Kappa::Row') );
+    {
+        my $guard = $db->row_object_enable(0);
+        $row = $db->model('TEST')->select_row($condition, $option);
+        is( ref $row, 'HASH' );
+        {
+            my $guard = $db->row_object_enable(0);
+            $row = $db->model('TEST')->select_row($condition, $option);
+            is( ref $row, 'HASH' );
+        }
+        $row = $db->model('TEST')->select_row($condition, $option);
+        is( ref $row, 'HASH' );
+    }
+    # dismiss guard
+    $row = $db->model('TEST')->select_row('TEST', $condition, $option);
+    ok( $row->isa('Kappa::Row') );
+
+};
+
 
 done_testing();
