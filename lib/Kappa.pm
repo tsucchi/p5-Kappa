@@ -47,7 +47,6 @@ sub model {
     my ($self, $table_name) = @_;
     my %options = %{ $self->options || {} };
     $options{table_name} = $table_name;
-    my $row_object_enable = !!$self->{row_object_enable};
     my $model = undef;
     if( defined $self->table_namespace ) {
         my $table_class = $self->table_namespace . "::$table_name";
@@ -64,7 +63,7 @@ sub model {
         $model = Kappa->new($self->dbh, \%options)
     }
 
-    $model->row_object_enable($row_object_enable);# take over current status to model
+    $model->{parent} = defined $self->{parent} ? $self->{parent} : $self;
     return $model;
 }
 
@@ -72,20 +71,57 @@ sub model {
 sub row_object_enable {
     my ($self, $row_object_enable) = @_;
 
-    my $current_status = !!$self->{row_object_enable};
-    $self->{row_object_enable} = $row_object_enable;
+    my $current_status = $self->_row_object_enable(); #preserve current(for guard object)
+    $self->_row_object_enable($row_object_enable);
 
-    if ( !!$row_object_enable ) {
+    $self->_switch_callback($row_object_enable);
+
+    if ( defined wantarray() ) {# guard object is required.
+        return Scope::Guard->new( sub { 
+            $self->{parent}->row_object_enable($current_status) if ( defined $self->{parent} );
+            $self->row_object_enable($current_status);
+        });
+    }
+}
+
+# callback switch on/of
+sub _switch_callback {
+    my ($self, $status) = @_;
+    if ( !!$status ) {
         $self->restore_callback;
+        $self->{parent}->restore_callback if ( defined $self->{parent} );
     }
     else {
         $self->disable_callback;
+        $self->{parent}->disable_callback if ( defined $self->{parent} );
     }
-    return Scope::Guard->new( sub { $self->row_object_enable($current_status) } ) if ( defined wantarray() );# guard object is required.
+}
+
+sub _auto_set_row_object_enable {
+    my ($self) = @_;
+    my $current_status = $self->_row_object_enable();
+    $self->_switch_callback($current_status);
+}
+
+# get/set current row_object_enable status in parent object
+sub _row_object_enable {
+    my $self = shift;
+    if( @_ ) {#setter
+        if( defined $self->{parent} ) {
+            $self->{parent}->{row_object_enable} = $_[0];
+        }
+        else {
+            $self->{row_object_enable} = $_[0];
+        }
+    }
+    else {# getter
+        return defined $self->{parent} ? $self->{parent}->{row_object_enable} : $self->{row_object_enable};
+    }
 }
 
 sub select_row { #override
     my $self = shift;
+    $self->_auto_set_row_object_enable;
     if( $self->_is_table_name_omit($_[0]) ) {
         my ($where, $option) = @_;
         return $self->SUPER::select_row($self->table_name, $where, $option);
@@ -96,6 +132,7 @@ sub select_row { #override
 
 sub select_all { #override
     my $self = shift;
+    $self->_auto_set_row_object_enable;
     if( $self->_is_table_name_omit($_[0]) ) {
         my ($where, $option) = @_;
         return $self->SUPER::select_all($self->table_name, $where, $option);
@@ -106,6 +143,7 @@ sub select_all { #override
 
 sub select_itr { #override
     my $self = shift;
+    $self->_auto_set_row_object_enable;
     if( $self->_is_table_name_omit($_[0]) ) {
         my ($where, $option) = @_;
         return $self->SUPER::select_itr($self->table_name, $where, $option);
@@ -116,24 +154,28 @@ sub select_itr { #override
 
 sub select_by_sql { #override
     my ($self, $sql, $params_aref, $table_name) = @_;
+    $self->_auto_set_row_object_enable;
     return $self->SUPER::select_by_sql($sql, $params_aref, $table_name) if ( defined $table_name && $table_name ne '' );
     return $self->SUPER::select_by_sql($sql, $params_aref, $self->table_name);
 }
 
 sub select_row_by_sql { #override
     my ($self, $sql, $params_aref, $table_name) = @_;
+    $self->_auto_set_row_object_enable;
     return $self->SUPER::select_row_by_sql($sql, $params_aref, $table_name) if ( defined $table_name && $table_name ne '' );
     return $self->SUPER::select_row_by_sql($sql, $params_aref, $self->table_name);
 }
 
 sub select_all_by_sql { #override
     my ($self, $sql, $params_aref, $table_name) = @_;
+    $self->_auto_set_row_object_enable;
     return $self->SUPER::select_all_by_sql($sql, $params_aref, $table_name) if ( defined $table_name && $table_name ne '' );
     return $self->SUPER::select_all_by_sql($sql, $params_aref, $self->table_name);
 }
 
 sub select_itr_by_sql { #override
     my ($self, $sql, $params_aref, $table_name) = @_;
+    $self->_auto_set_row_object_enable;
     return $self->_select_itr_by_sql($sql, $params_aref, $table_name) if ( defined $table_name && $table_name ne '' );
     return $self->_select_itr_by_sql($sql, $params_aref, $self->table_name);
 }
@@ -141,6 +183,7 @@ sub select_itr_by_sql { #override
 sub _select_itr_by_sql {
     my ($self, $sql, $binds_aref, $table_name) = @_;
     my $sth = $self->execute_query($sql, $binds_aref || []);
+    $self->row_object_enable($self->{parent}->{row_object_enable}) if ( defined $self->{parent} );# set status for model
     my $select_id = defined $self->callback ? $self->select_id : undef; #select_id does not need if callback is disabled.
 
     if( defined $table_name && defined $self->iterator_namespace ) {
@@ -158,6 +201,7 @@ sub _select_itr_by_sql {
 
 sub select_row_with_fields { #override
     my $self = shift;
+    $self->_auto_set_row_object_enable;
     if( $self->_is_table_name_omit($_[0]) ) {
         my ($fields_aref, $where, $option) = @_;
         return $self->SUPER::select_row_with_fields($self->table_name, $fields_aref, $where, $option);
@@ -168,6 +212,7 @@ sub select_row_with_fields { #override
 
 sub select_all_with_fields { #override
     my $self = shift;
+    $self->_auto_set_row_object_enable;
     if( $self->_is_table_name_omit($_[0]) ) {
         my ($fields, $where, $option) = @_;
         return $self->SUPER::select_all_with_fields($self->table_name, $fields, $where, $option);
@@ -178,6 +223,7 @@ sub select_all_with_fields { #override
 
 sub select_itr_with_fields { #override
     my $self = shift;
+    $self->_auto_set_row_object_enable;
     if( $self->_is_table_name_omit($_[0]) ) {
         my ($fields_aref, $where, $option) = @_;
         return $self->SUPER::select_itr_with_fields($self->table_name, $fields_aref, $where, $option);
@@ -238,6 +284,7 @@ sub _is_table_name_omit {
     my ($self, $arg0) = @_;
     return defined $self->table_name && $self->table_name ne '' && ref $arg0 ne '';
 }
+
 
 1;
 __END__

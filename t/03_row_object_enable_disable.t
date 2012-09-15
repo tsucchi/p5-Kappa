@@ -118,5 +118,21 @@ subtest 'nested guard with model', sub {
 
 };
 
+subtest 'row_object disable after model called/dismiss guard to model is not reflected', sub {
+    my $db = Kappa->new($dbh);
+    my $row = $db->model('Test')->select_row($condition, $option);
+    ok( $row->isa('Kappa::Row') );
+    my $model = $db->model('TEST');
+    {
+        my $guard = $db->row_object_enable(0);
+        $row = $model->select_row($condition, $option);
+        is( ref $row, 'HASH' );
+    }
+    # dismiss guard
+    $row = $model->select_row($condition, $option);
+    ok( $row->isa('Kappa::Row') );
+
+};
+
 
 done_testing();
