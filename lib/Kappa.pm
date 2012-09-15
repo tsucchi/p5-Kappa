@@ -45,26 +45,28 @@ sub new {
 
 sub model {
     my ($self, $table_name) = @_;
+    my $model = $self->_create_model($table_name);
+    $model->{parent} = defined $self->{parent} ? $self->{parent} : $self;
+    return $model;
+}
+
+sub _create_model {
+    my ($self, $table_name) = @_;
+
     my %options = %{ $self->options || {} };
     $options{table_name} = $table_name;
-    my $model = undef;
+
     if( defined $self->table_namespace ) {
         my $table_class = $self->table_namespace . "::$table_name";
 
         if( Class::Load::load_optional_class($table_class) ) {
-            $model = $table_class->new($self->dbh, \%options);
+            return $table_class->new($self->dbh, \%options);
         }
         elsif( Class::Load::load_optional_class($self->table_namespace) ) {
-            $model = $self->table_namespace->new($self->dbh, \%options);
+            return $self->table_namespace->new($self->dbh, \%options);
         }
     }
-
-    if ( !defined $model ) {
-        $model = Kappa->new($self->dbh, \%options)
-    }
-
-    $model->{parent} = defined $self->{parent} ? $self->{parent} : $self;
-    return $model;
+    return Kappa->new($self->dbh, \%options);
 }
 
 
