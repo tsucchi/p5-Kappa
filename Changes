@@ -4,6 +4,7 @@ Revision history for Perl extension Kappa
         - fix: row_object_enable is not taken over when using model().(again)
             - row_object_enable from child object(generetad by Kappa#model() method) is not reflected
             - row_object_enable to child object is not reflected when parent object enable/disable row object.
+        - insert/insert_multi/update/delete returns empty value.
 
 0.11    2012/09/14
         - fix: row_object_enable is not taken over when using model().
