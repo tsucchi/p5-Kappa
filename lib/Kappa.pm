@@ -233,40 +233,48 @@ sub insert { #override
     my $self = shift;
     if( $self->_is_table_name_omit($_[0]) ) {
         my ($values) = @_;
-        return $self->SUPER::insert($self->table_name, $values);
+        $self->SUPER::insert($self->table_name, $values);
+        return;
     }
     my ($table_name, $values) = @_;
-    return $self->SUPER::insert($table_name, $values);
+    $self->SUPER::insert($table_name, $values);
+    return;
 }
 
 sub insert_multi { #override
     my $self = shift;
     if( $self->_is_table_name_omit($_[0]) ) {
         my (@args) = @_;
-        return $self->SUPER::insert_multi($self->table_name, @args);
+        $self->SUPER::insert_multi($self->table_name, @args);
+        return;
     }
     my ($table_name, @args) = @_;
-    return $self->SUPER::insert_multi($table_name, @args);
+    $self->SUPER::insert_multi($table_name, @args);
+    return;
 }
 
 sub update { #override
     my $self = shift;
     if( $self->_is_table_name_omit($_[0]) ) {
         my ($set, $where) = @_;
-        return $self->SUPER::update($self->table_name, $set, $where);
+        $self->SUPER::update($self->table_name, $set, $where);
+        return;
     }
     my ($table_name, $set, $where) = @_;
-    return $self->SUPER::update($table_name, $set, $where);
+    $self->SUPER::update($table_name, $set, $where);
+    return;
 }
 
 sub delete { #override
     my $self = shift;
     if( $self->_is_table_name_omit($_[0]) ) {
         my ($where) = @_;
-        return $self->SUPER::delete($self->table_name, $where);
+        $self->SUPER::delete($self->table_name, $where);
+        return;
     }
     my ($table_name, $where) = @_;
-    return $self->SUPER::delete($table_name, $where);
+    $self->SUPER::delete($table_name, $where);
+    return;
 }
 
 sub select_id { #override
