@@ -78,7 +78,6 @@ sub row_object_enable {
 
     if ( defined wantarray() ) {# guard object is required.
         return Scope::Guard->new( sub { 
-            $self->{parent}->row_object_enable($current_status) if ( defined $self->{parent} );
             $self->row_object_enable($current_status);
         });
     }
@@ -89,11 +88,9 @@ sub _switch_callback {
     my ($self, $status) = @_;
     if ( !!$status ) {
         $self->restore_callback;
-        $self->{parent}->restore_callback if ( defined $self->{parent} );
     }
     else {
         $self->disable_callback;
-        $self->{parent}->disable_callback if ( defined $self->{parent} );
     }
 }
 
