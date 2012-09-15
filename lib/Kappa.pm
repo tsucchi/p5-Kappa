@@ -69,12 +69,12 @@ sub model {
 
 
 sub row_object_enable {
-    my ($self, $row_object_enable) = @_;
+    my ($self, $new_status) = @_;
 
     my $current_status = $self->_row_object_enable(); #preserve current(for guard object)
-    $self->_row_object_enable($row_object_enable);
+    $self->_row_object_enable($new_status);
 
-    $self->_switch_callback($row_object_enable);
+    $self->_switch_callback($new_status);
 
     if ( defined wantarray() ) {# guard object is required.
         return Scope::Guard->new( sub { 
