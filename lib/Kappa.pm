@@ -180,7 +180,6 @@ sub select_itr_by_sql { #override
 sub _select_itr_by_sql {
     my ($self, $sql, $binds_aref, $table_name) = @_;
     my $sth = $self->execute_query($sql, $binds_aref || []);
-    $self->row_object_enable($self->{parent}->{row_object_enable}) if ( defined $self->{parent} );# set status for model
     my $select_id = defined $self->callback ? $self->select_id : undef; #select_id does not need if callback is disabled.
 
     if( defined $table_name && defined $self->iterator_namespace ) {
