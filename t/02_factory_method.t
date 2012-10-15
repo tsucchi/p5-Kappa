@@ -33,4 +33,11 @@ subtest 'specify table class namespace(using model method)', sub {
     is( $db_for_test->table_name, 'TEST');
 };
 
+subtest 'default model for customized $db', sub {
+    my $db = CustomizedDB->new($dbh);
+    my $db_for_default_model = $db->model('NO_EXIST_TABLE');
+    is( ref $db_for_default_model, 'CustomizedDB');# NOT Kappa
+};
+
+
 done_testing;

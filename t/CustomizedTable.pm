@@ -14,8 +14,14 @@ sub db_for_test {
 }
 
 {
-    package CustomizedTable;
+    package CustomizedDB;
     our @ISA = qw(Kappa);
+    sub dbdb { return 'dbdb' }
+}
+
+{
+    package CustomizedTable;
+    our @ISA = qw(CustomizedDB);
     sub xxx { return 'xxx' }
 }
 

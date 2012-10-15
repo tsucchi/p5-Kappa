@@ -66,7 +66,8 @@ sub _create_model {
             return $self->table_namespace->new($self->dbh, \%options);
         }
     }
-    return Kappa->new($self->dbh, \%options);
+    my $class_name = ref $self;
+    return $class_name->new($self->dbh, \%options); # Kappa or subclass
 }
 
 
