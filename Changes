@@ -1,6 +1,7 @@
 Revision history for Perl extension Kappa
 
-0.13
+0.13    2012/10/15
+        - fix: when Kappa's subclass is used, model() did not return this subclass(returned Kappa).
 
 0.12    2012/09/14
         - fix: row_object_enable is not taken over when using model().(again)
