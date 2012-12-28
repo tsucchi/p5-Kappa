@@ -2,6 +2,7 @@ Revision history for Perl extension Kappa
 
 0.14    2012/12/28
         - new method: insert_on_duplicate (works only MySQL and requires SQL::Executor >= 0.14)
+        - using in-memory database in test code.
 
 0.13    2012/10/15
         - fix: when Kappa's subclass is used, model() did not return this subclass(returned Kappa).
