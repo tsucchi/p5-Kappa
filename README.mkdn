@@ -237,6 +237,18 @@ if table class is defined and select is called from table class, parameter $tabl
     my $db_for_sometable = $db->model('SOME_TABLE');
     $db_for_sometable->insert_multi({ id => 123, value => 'aaa' }, { id => 124, value => 'bbb' }); #omit $table_name
 
+## insert\_on\_duplicate($table\_name, $insert\_href, $update\_href)
+
+execute INSERT ... ON DUPLICATE KEY UPDATE using [SQL::Maker](http://search.cpan.org/perldoc?SQL::Maker)'s insert\_on\_duplicate. return value is nothing.
+
+if table class is defined and select is called from table class, parameter $table\_name is optional. like this, 
+
+    my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
+    my $db_for_sometable = $db->model('SOME_TABLE');
+    $db_for_sometable->insert_on_duplicate({ id => 123, value => 'aaa' }, { value => 'bbb' }); #omit $table_name
+
+
+
 
 
 ## delete($table\_name, $where)

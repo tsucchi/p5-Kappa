@@ -255,6 +255,19 @@ sub insert_multi { #override
     return;
 }
 
+sub insert_on_duplicate { #override
+    my $self = shift;
+    if( $self->_is_table_name_omit($_[0]) ) {
+        my ($insert_href, $update_href) = @_;
+        $self->SUPER::insert_on_duplicate($self->table_name, $insert_href, $update_href);
+        return;
+    }
+    my ($table_name, $insert_href, $update_href) = @_;
+    $self->SUPER::insert_on_duplicate($table_name, $insert_href, $update_href);
+    return;
+}
+
+
 sub update { #override
     my $self = shift;
     if( $self->_is_table_name_omit($_[0]) ) {
@@ -531,6 +544,17 @@ if table class is defined and select is called from table class, parameter $tabl
   my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
   my $db_for_sometable = $db->model('SOME_TABLE');
   $db_for_sometable->insert_multi({ id => 123, value => 'aaa' }, { id => 124, value => 'bbb' }); #omit $table_name
+
+=head2 insert_on_duplicate($table_name, $insert_href, $update_href)
+
+execute INSERT ... ON DUPLICATE KEY UPDATE using L<SQL::Maker>'s insert_on_duplicate. return value is nothing.
+
+if table class is defined and select is called from table class, parameter $table_name is optional. like this, 
+
+  my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
+  my $db_for_sometable = $db->model('SOME_TABLE');
+  $db_for_sometable->insert_on_duplicate({ id => 123, value => 'aaa' }, { value => 'bbb' }); #omit $table_name
+
 
 
 =head2 delete($table_name, $where)

@@ -218,6 +218,17 @@ METHODS FROM PARENT CLASS(SQL::Executor)
       my $db_for_sometable = $db->model('SOME_TABLE');
       $db_for_sometable->insert_multi({ id => 123, value => 'aaa' }, { id => 124, value => 'bbb' }); #omit $table_name
 
+  insert_on_duplicate($table_name, $insert_href, $update_href)
+    execute INSERT ... ON DUPLICATE KEY UPDATE using SQL::Maker's
+    insert_on_duplicate. return value is nothing.
+
+    if table class is defined and select is called from table class,
+    parameter $table_name is optional. like this,
+
+      my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
+      my $db_for_sometable = $db->model('SOME_TABLE');
+      $db_for_sometable->insert_on_duplicate({ id => 123, value => 'aaa' }, { value => 'bbb' }); #omit $table_name
+
   delete($table_name, $where)
     execute DELETE statment. return value is nothing.
 

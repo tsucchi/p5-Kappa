@@ -6,7 +6,7 @@ readme_markdown_from 'lib/Kappa.pm';
 readme_pod_from      'lib/Kappa.pm';
 githubmeta;
 
-requires 'SQL::Executor' => '0.11';
+requires 'SQL::Executor' => '0.14';
 requires 'Class::Load';
 requires 'Scope::Guard';
 recommends 'Class::Load::XS';
