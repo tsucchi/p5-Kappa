@@ -363,7 +363,19 @@ defined, Kappa::Iterator will be returned.
 
 # How to use Transaction.
 
-You can use [DBI](http://search.cpan.org/perldoc?DBI)'s transaction (begin\_work and commit).
+
+
+When create instance using connect() method, you can use [DBIx::Handler](http://search.cpan.org/perldoc?DBIx::Handler)'s
+transaction management,
+
+    use Kappa;
+    my $db = Kappa->connect($dsn, $id, $pass);
+    my $txn = $db->handler->txn_scope();
+    $db->insert('SOME_TABLE', { id => 124, value => 'xxxx'} );
+    $db->insert('SOME_TABLE', { id => 125, value => 'yyy'} );
+    $txn->commit();
+
+Or You can use [DBI](http://search.cpan.org/perldoc?DBI)'s transaction (begin\_work and commit).
 
     use DBI;
     use Kappa
