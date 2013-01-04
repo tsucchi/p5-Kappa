@@ -4,7 +4,7 @@ use strict;
 use warnings;
 our $VERSION = '0.14';
 use Class::Accessor::Lite (
-    ro => ['dbh', 'row_namespace', 'iterator_namespace', 'table_namespace', 'options', 'table_name'],
+    ro => ['row_namespace', 'iterator_namespace', 'table_namespace', 'options', 'table_name'],
     rw => ['id_generator'],
 );
 use Kappa::Row;
@@ -15,24 +15,45 @@ use Carp qw();
 use Data::UUID;
 
 sub new {
-    my ($class, $dbh, $option_href) = @_;
+    my ($class, $dbh_or_handler, $option_href) = @_;
+    my $dbh     = ref $dbh_or_handler eq 'DBIx::Handler' ? $dbh_or_handler->dbh : $dbh_or_handler;
+    my $handler = ref $dbh_or_handler eq 'DBIx::Handler' ? $dbh_or_handler      : undef;
     my $self = $class->SUPER::new($dbh, {
         %{ $option_href || {} },
-        callback => sub {
-            my ($self, $row, $table_name, $select_id) = @_;
-            if( defined $table_name && defined $self->row_namespace ) {
-                my $row_class = $self->row_namespace . "::$table_name";
-                if( Class::Load::load_optional_class($row_class) ) {
-                    return $row_class->new($row, $self, $table_name);
-                }
-                if ( Class::Load::load_optional_class($self->row_namespace) ) {
-                    return $self->row_namespace->new($row, $self, $table_name, { use_anonymous_class => 1, select_id => $select_id });
-                }
-            }
-            return Kappa::Row->new($row, $self, $table_name, { use_anonymous_class => 1, select_id => $select_id });
-        },
+        callback => \&_callback,
     });
+    $self->{handler} = $handler;
+    $self->_set_options($option_href);
+    bless $self, $class;
+}
 
+sub connect {
+    my ($class, $dsn, $user, $pass, $option_for_dbi, $option_href) = @_;
+    my $self = $class->SUPER::connect($dsn, $user, $pass, $option_for_dbi, {
+        %{ $option_href || {} },
+        callback => \&_callback,
+    });
+    $self->_set_options($option_href);
+    bless $self, $class;
+}
+
+
+sub _callback {
+    my ($self, $row, $table_name, $select_id) = @_;
+    if( defined $table_name && defined $self->row_namespace ) {
+        my $row_class = $self->row_namespace . "::$table_name";
+        if( Class::Load::load_optional_class($row_class) ) {
+            return $row_class->new($row, $self, $table_name);
+        }
+        if ( Class::Load::load_optional_class($self->row_namespace) ) {
+            return $self->row_namespace->new($row, $self, $table_name, { use_anonymous_class => 1, select_id => $select_id });
+        }
+    }
+    return Kappa::Row->new($row, $self, $table_name, { use_anonymous_class => 1, select_id => $select_id });
+}
+
+sub _set_options {
+    my ($self, $option_href) = @_;
     $self->{row_namespace}      = $option_href->{row_namespace};
     $self->{iterator_namespace} = $option_href->{iterator_namespace};
     $self->{table_namespace}    = $option_href->{table_namespace};
@@ -40,8 +61,8 @@ sub new {
     $self->{row_object_enable}  = defined $option_href->{row_object_enable} ? $option_href->{row_object_enable} : 1;
 
     $self->{options} = $option_href;
-    bless $self, $class;
 }
+
 
 sub model {
     my ($self, $table_name) = @_;
@@ -56,18 +77,19 @@ sub _create_model {
     my %options = %{ $self->options || {} };
     $options{table_name} = $table_name;
 
+    my $dbh_or_handler = defined $self->handler ? $self->handler : $self->dbh;
     if( defined $self->table_namespace ) {
         my $table_class = $self->table_namespace . "::$table_name";
 
         if( Class::Load::load_optional_class($table_class) ) {
-            return $table_class->new($self->dbh, \%options);
+            return $table_class->new($dbh_or_handler, \%options);
         }
         elsif( Class::Load::load_optional_class($self->table_namespace) ) {
-            return $self->table_namespace->new($self->dbh, \%options);
+            return $self->table_namespace->new($dbh_or_handler, \%options);
         }
     }
     my $class_name = ref $self;
-    return $class_name->new($self->dbh, \%options); # Kappa or subclass
+    return $class_name->new($dbh_or_handler, \%options); # Kappa or subclass
 }
 
 
@@ -666,7 +688,18 @@ defined, Kappa::Iterator will be returned.
 
 =head1 How to use Transaction.
 
-You can use L<DBI>'s transaction (begin_work and commit).
+
+When create instance using connect() method, you can use L<DBIx::Handler>'s
+transaction management,
+
+  use Kappa;
+  my $db = Kappa->connect($dsn, $id, $pass);
+  my $txn = $db->handler->txn_scope();
+  $db->insert('SOME_TABLE', { id => 124, value => 'xxxx'} );
+  $db->insert('SOME_TABLE', { id => 125, value => 'yyy'} );
+  $txn->commit();
+
+Or You can use L<DBI>'s transaction (begin_work and commit).
 
   use DBI;
   use Kappa
