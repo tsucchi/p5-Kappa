@@ -276,6 +276,38 @@ run sql statement and returns statement handler($sth)
 run sql statement with named placeholder and returns statement handler($sth)
 
 
+=head2 sql_from_data_section($sql_name)
+
+fetch SQL from __DATA__ section in Table class. For example, write SQL in Table class like this
+
+  package MyProj::Table::Order;
+  use parent qw(Kappa);
+  use strict;
+  use warnings;
+
+  sub select_from_order_no {
+      my ($self, $order_no) = @_;
+      my $sql = $self->sql_from_data_section('select_from_order_no');
+      return $self->select_all_named($sql, { order_no => $order_no });
+  }
+  1;
+  __DATA__
+  
+  @@ select_from_order_no
+  SELECT *
+    FROM Order
+    WHERE order_no = :order_no
+  ;
+
+if $sql_name is omitted, method name is used by default. in this case(in select_from_order_no() method),
+
+
+  my $sql = $self->sql_from_data_section('select_from_order_no');
+
+is same as
+
+  my $sql = $self->sql_from_data_section;
+
 =head1 DEFINE CUSTOMIZED ROW CLASS
 
 You can define Row class specified in specified in row_namespace at new(). for example, define MyProj::Row::Order like this,

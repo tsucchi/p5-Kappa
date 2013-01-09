@@ -13,6 +13,8 @@ use Class::Load qw();
 use Scope::Guard;
 use Carp qw();
 use Data::UUID;
+use Data::Section::Simple qw();
+use Try::Tiny;
 
 sub new {
     my ($class, $dbh_or_handler, $option_href) = @_;
@@ -314,6 +316,25 @@ sub delete { #override
     return;
 }
 
+sub sql_from_data_section {
+    my ($self, $section_sql_name) = @_;
+    my $pkg = ref $self;
+    my $ds = Data::Section::Simple->new($pkg);
+    if ( !defined $section_sql_name ) {
+        $section_sql_name = (caller(1))[3];# method name
+        $section_sql_name =~ s/.+::// ;
+    }
+    my $result = '';
+    try {
+        $result = $ds->get_data_section($section_sql_name);
+    } catch {
+        Carp::croak "can't find SQL from __DATA__ section : $_\n";
+    };
+    return $result;
+}
+
+
+
 sub select_id { #override
     my ($self) = @_;
     if( !defined $self->id_generator ) {
@@ -608,6 +629,38 @@ run sql statement and returns statement handler($sth)
 
 run sql statement with named placeholder and returns statement handler($sth)
 
+
+=head2 sql_from_data_section($sql_name)
+
+fetch SQL from __DATA__ section in Table class. For example, write SQL in Table class like this
+
+  package MyProj::Table::Order;
+  use parent qw(Kappa);
+  use strict;
+  use warnings;
+
+  sub select_from_order_no {
+      my ($self, $order_no) = @_;
+      my $sql = $self->sql_from_data_section('select_from_order_no');
+      return $self->select_all_named($sql, { order_no => $order_no });
+  }
+  1;
+  __DATA__
+  
+  @@ select_from_order_no
+  SELECT *
+    FROM Order
+    WHERE order_no = :order_no
+  ;
+
+if $sql_name is omitted, method name is used by default. in this case(in select_from_order_no() method),
+
+
+  my $sql = $self->sql_from_data_section('select_from_order_no');
+
+is same as
+
+  my $sql = $self->sql_from_data_section;
 
 =head1 DEFINE CUSTOMIZED ROW CLASS
 

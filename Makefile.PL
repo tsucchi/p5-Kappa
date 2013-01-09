@@ -11,6 +11,7 @@ requires 'Class::Load';
 requires 'Scope::Guard';
 recommends 'Class::Load::XS';
 requires 'Data::UUID';
+requires 'Data::Section::Simple';
 
 tests 't/*.t';
 author_tests 'xt';

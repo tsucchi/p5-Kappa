@@ -1,5 +1,6 @@
 Revision history for Perl extension Kappa
-0.15
+0.15    2013/01/09
+        - new method: sql_from_data_section(). fetch SQL from __DATA__ section in Table class.
 
 0.14    2012/12/28
         - new method: insert_on_duplicate (works only MySQL, requires SQL::Maker >= 1.09 and SQL::Executor >= 0.14)
