@@ -1,4 +1,5 @@
 Revision history for Perl extension Kappa
+0.15
 
 0.14    2012/12/28
         - new method: insert_on_duplicate (works only MySQL, requires SQL::Maker >= 1.09 and SQL::Executor >= 0.14)
