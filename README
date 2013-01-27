@@ -161,7 +161,7 @@ METHODS FROM PARENT CLASS(SQL::Executor)
 
   select_itr_named($sql, $params_href, $table_name)
     run select by sql using named placeholder. and return iterator that
-    contains row objects. Iterator is instance of SQL::Executor::Iterator
+    contains row objects. Iterator is instance of Kappa::Iterator
 
       my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
       my $itr = $db->select_itr_named('SELECT id, value FROM SOME_TABLE WHERE value = :value', { value => 'aaa' });

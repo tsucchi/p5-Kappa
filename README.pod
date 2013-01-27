@@ -168,7 +168,7 @@ $table_name is optional but you need customized Row object, you must specify $ta
 =head2 select_itr_named($sql, $params_href, $table_name)
 
 run select by sql using named placeholder. and return iterator that contains row objects.
-Iterator is instance of L<SQL::Executor::Iterator>
+Iterator is instance of L<Kappa::Iterator>
 
   my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
   my $itr = $db->select_itr_named('SELECT id, value FROM SOME_TABLE WHERE value = :value', { value => 'aaa' });

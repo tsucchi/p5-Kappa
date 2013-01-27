@@ -2,7 +2,7 @@ package Kappa;
 use parent qw(SQL::Executor);
 use strict;
 use warnings;
-our $VERSION = '0.15';
+our $VERSION = '0.16';
 use Class::Accessor::Lite (
     ro => ['row_namespace', 'iterator_namespace', 'table_namespace', 'options', 'table_name'],
     rw => ['id_generator'],
@@ -522,7 +522,7 @@ $table_name is optional but you need customized Row object, you must specify $ta
 =head2 select_itr_named($sql, $params_href, $table_name)
 
 run select by sql using named placeholder. and return iterator that contains row objects.
-Iterator is instance of L<SQL::Executor::Iterator>
+Iterator is instance of L<Kappa::Iterator>
 
   my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
   my $itr = $db->select_itr_named('SELECT id, value FROM SOME_TABLE WHERE value = :value', { value => 'aaa' });
