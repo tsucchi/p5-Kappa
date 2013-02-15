@@ -2,7 +2,7 @@ package Kappa;
 use parent qw(SQL::Executor);
 use strict;
 use warnings;
-our $VERSION = '0.15';
+our $VERSION = '0.16';
 use Class::Accessor::Lite (
     ro => ['row_namespace', 'iterator_namespace', 'table_namespace', 'options', 'table_name'],
     rw => ['id_generator'],
