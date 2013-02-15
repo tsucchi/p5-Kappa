@@ -10,3 +10,5 @@ __DATA__
 
 @@ test_sql
 SELECT * FROM TEST;
+@@ test_sql2
+SELECT * FROM TEST;
