@@ -276,7 +276,7 @@ run sql statement and returns statement handler($sth)
 run sql statement with named placeholder and returns statement handler($sth)
 
 
-=head2 sql
+=head2 sql()
 
 =head2 sql_from_data_section($sql_name)
 

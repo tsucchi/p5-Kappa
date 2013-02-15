@@ -283,7 +283,7 @@ run sql statement with named placeholder and returns statement handler($sth)
 
 
 
-## sql
+## sql()
 
 ## sql\_from\_data\_section($sql\_name)
 
