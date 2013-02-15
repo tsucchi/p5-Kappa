@@ -39,7 +39,7 @@ subtest 'select_row_named', sub {
     is( $row->table_name, 'TEST');
 };
 
-subtest 'select_row_all_named', sub {
+subtest 'select_all_named', sub {
     my $db_for_test = db_for_test($dbh);
     is( $db_for_test->table_name, 'TEST');
     my @rows = $db_for_test->select_all_named($sql, $condition);

@@ -13,6 +13,10 @@ BEGIN {
         my ($self) = @_;
         return $self->sql_from_data_section(); #using default SQL name
     }
+    sub test_sql2 {
+        my ($self) = @_;
+        return $self->sql; #using default SQL name
+    }
 }
 
 my $dbh = prepare_dbh();
@@ -43,6 +47,11 @@ subtest 'cannot find SQL because table name is not determined', sub {
     } catch {
         like( $_, qr/^can't find SQL from __DATA__ section : /);
     };
+};
+
+subtest 'default SQL name in sql (method alias)', sub {
+    my $db_for_test = $db->model('TEST');
+    is( $db_for_test->test_sql2, "SELECT * FROM TEST;\n" );
 };
 
 

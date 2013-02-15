@@ -137,8 +137,18 @@ METHODS FROM PARENT CLASS(SQL::Executor)
       my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
       my $row = $db->select_named('SELECT id, value FROM SOME_TABLE WHERE value = :value', { value => 'aaa' });
 
-    $table_name is optional but you need customized Row object, you must
-    specify $table_name.
+    if table class is defined and SQL is written in __DATA__ section. $sql
+    is omittable and used method name as SQL name.
+
+      package My::Table::Class;
+      sub using_select_named {
+          my ($self, $id) = @_;
+          return $self->select_named({ id => $id });# '@@ using_select_name' is used
+      }
+      1;
+      __DATA__
+      @@ using_select_named
+      SELECT * FROM MyTable WHERE id = :id;
 
   select_row_named($sql, $params_href, $table_name)
     run select by sql using named placeholder. and return one row object.
@@ -146,8 +156,8 @@ METHODS FROM PARENT CLASS(SQL::Executor)
       my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
       my $row = $db->select_row_named('SELECT id, value FROM SOME_TABLE WHERE value = :value', { value => 'aaa' });
 
-    $table_name is optional but you need customized Row object, you must
-    specify $table_name.
+    if table class is defined and SQL is written in __DATA__ section. $sql
+    is omittable and used method name as SQL name.
 
   select_all_named($sql, $params_href, $table_name)
     run select by sql using named placeholder. and return array of row
@@ -156,8 +166,8 @@ METHODS FROM PARENT CLASS(SQL::Executor)
       my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
       my @rows = $db->select_all_named('SELECT id, value FROM SOME_TABLE WHERE value = :value', { value => 'aaa' });
 
-    $table_name is optional but you need customized Row object, you must
-    specify $table_name.
+    if table class is defined and SQL is written in __DATA__ section. $sql
+    is omittable and used method name as SQL name.
 
   select_itr_named($sql, $params_href, $table_name)
     run select by sql using named placeholder. and return iterator that
@@ -169,8 +179,8 @@ METHODS FROM PARENT CLASS(SQL::Executor)
           ... #using row object
       }
 
-    $table_name is optional but you need customized Row object, you must
-    specify $table_name.
+    if table class is defined and SQL is written in __DATA__ section. $sql
+    is omittable and used method name as SQL name.
 
   select_by_sql($sql, \@binds, $table_name)
     run select by sql using normal placeholder('?').
@@ -256,6 +266,7 @@ METHODS FROM PARENT CLASS(SQL::Executor)
     run sql statement with named placeholder and returns statement
     handler($sth)
 
+  sql()
   sql_from_data_section($sql_name)
     fetch SQL from __DATA__ section in Table class. For example, write SQL
     in Table class like this
@@ -287,6 +298,8 @@ METHODS FROM PARENT CLASS(SQL::Executor)
     is same as
 
       my $sql = $self->sql_from_data_section;
+
+    sql() is method alias to sql_from_data_section()
 
 DEFINE CUSTOMIZED ROW CLASS
     You can define Row class specified in specified in row_namespace at
