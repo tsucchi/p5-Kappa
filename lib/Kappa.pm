@@ -183,8 +183,9 @@ sub select_named { #override
         my ($where, $option) = @_;
         return $self->SUPER::select_named($self->sql, $where, $option);
     }
-    my ($sql, $where, $option) = @_;
-    return $self->SUPER::select_named($sql, $where, $option);
+    my ($sql, $where, $option, $table_name) = @_;
+    $table_name = $self->table_name if ( !defined $table_name );
+    return $self->SUPER::select_named($sql, $where, $option, $table_name);
 }
 
 sub select_row_named { #override
@@ -194,8 +195,9 @@ sub select_row_named { #override
         my ($where, $option) = @_;
         return $self->SUPER::select_row_named($self->sql, $where, $option);
     }
-    my ($sql, $where, $option) = @_;
-    return $self->SUPER::select_row_named($sql, $where, $option);
+    my ($sql, $where, $option, $table_name) = @_;
+    $table_name = $self->table_name if ( !defined $table_name );
+    return $self->SUPER::select_row_named($sql, $where, $option, $table_name);
 }
 
 sub select_all_named { #override
@@ -205,8 +207,9 @@ sub select_all_named { #override
         my ($where, $option) = @_;
         return $self->SUPER::select_all_named($self->sql, $where, $option);
     }
-    my ($sql, $where, $option) = @_;
-    return $self->SUPER::select_all_named($sql, $where, $option);
+    my ($sql, $where, $option, $table_name) = @_;
+    $table_name = $self->table_name if ( !defined $table_name );
+    return $self->SUPER::select_all_named($sql, $where, $option, $table_name);
 }
 
 sub select_itr_named { #override
@@ -216,8 +219,9 @@ sub select_itr_named { #override
         my ($where, $option) = @_;
         return $self->SUPER::select_itr_named($self->sql, $where, $option);
     }
-    my ($sql, $where, $option) = @_;
-    return $self->SUPER::select_itr_named($sql, $where, $option);
+    my ($sql, $where, $option, $table_name) = @_;
+    $table_name = $self->table_name if ( !defined $table_name );
+    return $self->SUPER::select_itr_named($sql, $where, $option, $table_name);
 }
 
 
@@ -568,8 +572,17 @@ In scalar context, return one row object. In array context, return array of row 
   my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
   my $row = $db->select_named('SELECT id, value FROM SOME_TABLE WHERE value = :value', { value => 'aaa' });
 
-$table_name is optional but you need customized Row object, you must specify $table_name.
+if table class is defined and SQL is written in __DATA__ section. $sql is omittable and used method name as SQL name.
 
+  package My::Table::Class;
+  sub using_select_named {
+      my ($self, $id) = @_;
+      return $self->select_named({ id => $id });# '@@ using_select_name' is used
+  }
+  1;
+  __DATA__
+  @@ using_select_named
+  SELECT * FROM MyTable WHERE id = :id;
 
 =head2 select_row_named($sql, $params_href, $table_name)
 
@@ -578,8 +591,7 @@ run select by sql using named placeholder. and return one row object.
   my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
   my $row = $db->select_row_named('SELECT id, value FROM SOME_TABLE WHERE value = :value', { value => 'aaa' });
 
-$table_name is optional but you need customized Row object, you must specify $table_name.
-
+if table class is defined and SQL is written in __DATA__ section. $sql is omittable and used method name as SQL name.
 
 =head2 select_all_named($sql, $params_href, $table_name)
 
@@ -588,13 +600,12 @@ run select by sql using named placeholder. and return array of row objects.
   my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
   my @rows = $db->select_all_named('SELECT id, value FROM SOME_TABLE WHERE value = :value', { value => 'aaa' });
 
-$table_name is optional but you need customized Row object, you must specify $table_name.
-
+if table class is defined and SQL is written in __DATA__ section. $sql is omittable and used method name as SQL name.
 
 =head2 select_itr_named($sql, $params_href, $table_name)
 
 run select by sql using named placeholder. and return iterator that contains row objects.
-Iterator is instance of L<SQL::Executor::Iterator>
+Iterator is instance of L<Kappa::Iterator>
 
   my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
   my $itr = $db->select_itr_named('SELECT id, value FROM SOME_TABLE WHERE value = :value', { value => 'aaa' });
@@ -602,8 +613,7 @@ Iterator is instance of L<SQL::Executor::Iterator>
       ... #using row object
   }
 
-$table_name is optional but you need customized Row object, you must specify $table_name.
-
+if table class is defined and SQL is written in __DATA__ section. $sql is omittable and used method name as SQL name.
 
 =head2 select_by_sql($sql, \@binds, $table_name)
 

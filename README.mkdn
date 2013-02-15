@@ -139,9 +139,17 @@ In scalar context, return one row object. In array context, return array of row 
     my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
     my $row = $db->select_named('SELECT id, value FROM SOME_TABLE WHERE value = :value', { value => 'aaa' });
 
-$table\_name is optional but you need customized Row object, you must specify $table\_name.
+if table class is defined and SQL is written in \_\_DATA\_\_ section. $sql is omittable and used method name as SQL name.
 
-
+    package My::Table::Class;
+    sub using_select_named {
+        my ($self, $id) = @_;
+        return $self->select_named({ id => $id });# '@@ using_select_name' is used
+    }
+    1;
+    __DATA__
+    @@ using_select_named
+    SELECT * FROM MyTable WHERE id = :id;
 
 ## select\_row\_named($sql, $params\_href, $table\_name)
 
@@ -150,9 +158,7 @@ run select by sql using named placeholder. and return one row object.
     my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
     my $row = $db->select_row_named('SELECT id, value FROM SOME_TABLE WHERE value = :value', { value => 'aaa' });
 
-$table\_name is optional but you need customized Row object, you must specify $table\_name.
-
-
+if table class is defined and SQL is written in \_\_DATA\_\_ section. $sql is omittable and used method name as SQL name.
 
 ## select\_all\_named($sql, $params\_href, $table\_name)
 
@@ -161,14 +167,12 @@ run select by sql using named placeholder. and return array of row objects.
     my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
     my @rows = $db->select_all_named('SELECT id, value FROM SOME_TABLE WHERE value = :value', { value => 'aaa' });
 
-$table\_name is optional but you need customized Row object, you must specify $table\_name.
-
-
+if table class is defined and SQL is written in \_\_DATA\_\_ section. $sql is omittable and used method name as SQL name.
 
 ## select\_itr\_named($sql, $params\_href, $table\_name)
 
 run select by sql using named placeholder. and return iterator that contains row objects.
-Iterator is instance of [SQL::Executor::Iterator](http://search.cpan.org/perldoc?SQL::Executor::Iterator)
+Iterator is instance of [Kappa::Iterator](http://search.cpan.org/perldoc?Kappa::Iterator)
 
     my $db = Kappa->new($dbh, { table_namespace => 'MyProj::Table'});
     my $itr = $db->select_itr_named('SELECT id, value FROM SOME_TABLE WHERE value = :value', { value => 'aaa' });
@@ -176,9 +180,7 @@ Iterator is instance of [SQL::Executor::Iterator](http://search.cpan.org/perldoc
         ... #using row object
     }
 
-$table\_name is optional but you need customized Row object, you must specify $table\_name.
-
-
+if table class is defined and SQL is written in \_\_DATA\_\_ section. $sql is omittable and used method name as SQL name.
 
 ## select\_by\_sql($sql, \\@binds, $table\_name)
 
