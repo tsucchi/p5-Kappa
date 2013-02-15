@@ -45,6 +45,11 @@ subtest 'cannot find SQL because table name is not determined', sub {
     };
 };
 
+subtest 'sql (method alias)', sub {
+    my $db_for_test = $db->model('TEST');
+    is( $db_for_test->sql('test_sql'), "SELECT * FROM TEST;\n" );
+};
+
 
 done_testing;
 

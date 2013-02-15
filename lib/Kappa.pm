@@ -316,6 +316,7 @@ sub delete { #override
     return;
 }
 
+
 sub sql_from_data_section {
     my ($self, $section_sql_name) = @_;
     my $pkg = ref $self;
@@ -333,7 +334,7 @@ sub sql_from_data_section {
     return $result;
 }
 
-
+*sql = \&sql_from_data_section;
 
 sub select_id { #override
     my ($self) = @_;
@@ -630,6 +631,8 @@ run sql statement and returns statement handler($sth)
 run sql statement with named placeholder and returns statement handler($sth)
 
 
+=head2 sql
+
 =head2 sql_from_data_section($sql_name)
 
 fetch SQL from __DATA__ section in Table class. For example, write SQL in Table class like this
@@ -661,6 +664,8 @@ if $sql_name is omitted, method name is used by default. in this case(in select_
 is same as
 
   my $sql = $self->sql_from_data_section;
+
+sql() is method alias to sql_from_data_section()
 
 =head1 DEFINE CUSTOMIZED ROW CLASS
 

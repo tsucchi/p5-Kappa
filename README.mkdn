@@ -283,6 +283,8 @@ run sql statement with named placeholder and returns statement handler($sth)
 
 
 
+## sql
+
 ## sql\_from\_data\_section($sql\_name)
 
 fetch SQL from \_\_DATA\_\_ section in Table class. For example, write SQL in Table class like this
@@ -316,6 +318,8 @@ if $sql\_name is omitted, method name is used by default. in this case(in select
 is same as
 
     my $sql = $self->sql_from_data_section;
+
+sql() is method alias to sql\_from\_data\_section()
 
 # DEFINE CUSTOMIZED ROW CLASS
 
