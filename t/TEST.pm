@@ -20,3 +20,15 @@ SELECT * FROM TEST WHERE value = :value;
 SELECT * FROM TEST WHERE value = :value;
 @@ test_select_itr_named
 SELECT * FROM TEST WHERE value = :value;
+@@ test_select_by_sql
+SELECT * FROM TEST WHERE value = ?;
+
+@@ test_select_row_by_sql
+SELECT * FROM TEST WHERE value = ?;
+
+@@ test_select_all_by_sql
+SELECT * FROM TEST WHERE value = ?;
+
+@@ test_select_itr_by_sql
+SELECT * FROM TEST WHERE value = ?;
+

@@ -186,17 +186,25 @@ if table class is defined and SQL is written in \_\_DATA\_\_ section. $sql is om
 
 run select by sql using normal placeholder('?').
 
+if table class is defined and SQL is written in \_\_DATA\_\_ section. $sql is omittable and used method name as SQL name.
+
 ## select\_row\_by\_sql($sql, \\@binds, $table\_name)
 
 run select by sql using normal placeholder('?').
+
+if table class is defined and SQL is written in \_\_DATA\_\_ section. $sql is omittable and used method name as SQL name.
 
 ## select\_all\_by\_sql($sql, \\@binds, $table\_name)
 
 run select by sql using normal placeholder('?').
 
+if table class is defined and SQL is written in \_\_DATA\_\_ section. $sql is omittable and used method name as SQL name.
+
 ## select\_itr\_by\_sql($sql, \\@binds, $table\_name)
 
 run select by sql using normal placeholder('?').
+
+if table class is defined and SQL is written in \_\_DATA\_\_ section. $sql is omittable and used method name as SQL name.
 
 ## select\_with\_fields($table\_name, $fields\_aref, $where, $option)
 

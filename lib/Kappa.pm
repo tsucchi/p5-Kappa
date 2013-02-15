@@ -228,30 +228,50 @@ sub select_itr_named { #override
 
 
 sub select_by_sql { #override
-    my ($self, $sql, $params_aref, $table_name) = @_;
+    my $self = shift;
     $self->_auto_set_row_object_enable;
+    if( $self->_is_sql_omit($_[0]) ) {
+        my ($params_aref) = @_;
+        return $self->SUPER::select_by_sql($self->sql, $params_aref, $self->table_name);
+    }
+    my ($sql, $params_aref, $table_name) = @_;
     return $self->SUPER::select_by_sql($sql, $params_aref, $table_name) if ( defined $table_name && $table_name ne '' );
     return $self->SUPER::select_by_sql($sql, $params_aref, $self->table_name);
 }
 
 sub select_row_by_sql { #override
-    my ($self, $sql, $params_aref, $table_name) = @_;
+    my $self = shift;
     $self->_auto_set_row_object_enable;
+    if( $self->_is_sql_omit($_[0]) ) {
+        my ($params_aref) = @_;
+        return $self->SUPER::select_row_by_sql($self->sql, $params_aref, $self->table_name);
+    }
+    my ($sql, $params_aref, $table_name) = @_;
     return $self->SUPER::select_row_by_sql($sql, $params_aref, $table_name) if ( defined $table_name && $table_name ne '' );
     return $self->SUPER::select_row_by_sql($sql, $params_aref, $self->table_name);
 }
 
 
 sub select_all_by_sql { #override
-    my ($self, $sql, $params_aref, $table_name) = @_;
+    my $self = shift;
     $self->_auto_set_row_object_enable;
+    if( $self->_is_sql_omit($_[0]) ) {
+        my ($params_aref) = @_;
+        return $self->SUPER::select_all_by_sql($self->sql, $params_aref, $self->table_name);
+    }
+    my ($sql, $params_aref, $table_name) = @_;
     return $self->SUPER::select_all_by_sql($sql, $params_aref, $table_name) if ( defined $table_name && $table_name ne '' );
     return $self->SUPER::select_all_by_sql($sql, $params_aref, $self->table_name);
 }
 
 sub select_itr_by_sql { #override
-    my ($self, $sql, $params_aref, $table_name) = @_;
+    my $self = shift;
     $self->_auto_set_row_object_enable;
+    if( $self->_is_sql_omit($_[0]) ) {
+        my ($params_aref) = @_;
+        return $self->_select_itr_by_sql($self->sql, $params_aref, $self->table_name);
+    }
+    my ($sql, $params_aref, $table_name) = @_;
     return $self->_select_itr_by_sql($sql, $params_aref, $table_name) if ( defined $table_name && $table_name ne '' );
     return $self->_select_itr_by_sql($sql, $params_aref, $self->table_name);
 }
@@ -423,7 +443,7 @@ sub _is_table_name_omit {
 
 sub _is_sql_omit {
     my ($self, $arg0) = @_;
-    return ref $arg0 eq 'HASH';
+    return ref $arg0 eq 'HASH' || ref $arg0 eq 'ARRAY';
 }
 
 
@@ -621,17 +641,25 @@ if table class is defined and SQL is written in __DATA__ section. $sql is omitta
 
 run select by sql using normal placeholder('?').
 
+if table class is defined and SQL is written in __DATA__ section. $sql is omittable and used method name as SQL name.
+
 =head2 select_row_by_sql($sql, \@binds, $table_name)
 
 run select by sql using normal placeholder('?').
+
+if table class is defined and SQL is written in __DATA__ section. $sql is omittable and used method name as SQL name.
 
 =head2 select_all_by_sql($sql, \@binds, $table_name)
 
 run select by sql using normal placeholder('?').
 
+if table class is defined and SQL is written in __DATA__ section. $sql is omittable and used method name as SQL name.
+
 =head2 select_itr_by_sql($sql, \@binds, $table_name)
 
 run select by sql using normal placeholder('?').
+
+if table class is defined and SQL is written in __DATA__ section. $sql is omittable and used method name as SQL name.
 
 =head2 select_with_fields($table_name, $fields_aref, $where, $option)
 

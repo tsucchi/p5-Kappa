@@ -185,14 +185,26 @@ METHODS FROM PARENT CLASS(SQL::Executor)
   select_by_sql($sql, \@binds, $table_name)
     run select by sql using normal placeholder('?').
 
+    if table class is defined and SQL is written in __DATA__ section. $sql
+    is omittable and used method name as SQL name.
+
   select_row_by_sql($sql, \@binds, $table_name)
     run select by sql using normal placeholder('?').
+
+    if table class is defined and SQL is written in __DATA__ section. $sql
+    is omittable and used method name as SQL name.
 
   select_all_by_sql($sql, \@binds, $table_name)
     run select by sql using normal placeholder('?').
 
+    if table class is defined and SQL is written in __DATA__ section. $sql
+    is omittable and used method name as SQL name.
+
   select_itr_by_sql($sql, \@binds, $table_name)
     run select by sql using normal placeholder('?').
+
+    if table class is defined and SQL is written in __DATA__ section. $sql
+    is omittable and used method name as SQL name.
 
   select_with_fields($table_name, $fields_aref, $where, $option)
     same as select but you can specify field name by using $fields_aref.
