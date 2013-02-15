@@ -12,3 +12,11 @@ __DATA__
 SELECT * FROM TEST;
 @@ test_sql2
 SELECT * FROM TEST;
+@@ test_select_named
+SELECT * FROM TEST WHERE value = :value;
+@@ test_select_row_named
+SELECT * FROM TEST WHERE value = :value;
+@@ test_select_all_named
+SELECT * FROM TEST WHERE value = :value;
+@@ test_select_itr_named
+SELECT * FROM TEST WHERE value = :value;

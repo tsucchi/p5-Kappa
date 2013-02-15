@@ -176,6 +176,51 @@ sub select_itr { #override
     return $self->SUPER::select_itr($table_name, $where, $option);
 }
 
+sub select_named { #override
+    my $self = shift;
+    $self->_auto_set_row_object_enable;
+    if( $self->_is_sql_omit($_[0]) ) {
+        my ($where, $option) = @_;
+        return $self->SUPER::select_named($self->sql, $where, $option);
+    }
+    my ($sql, $where, $option) = @_;
+    return $self->SUPER::select_named($sql, $where, $option);
+}
+
+sub select_row_named { #override
+    my $self = shift;
+    $self->_auto_set_row_object_enable;
+    if( $self->_is_sql_omit($_[0]) ) {
+        my ($where, $option) = @_;
+        return $self->SUPER::select_row_named($self->sql, $where, $option);
+    }
+    my ($sql, $where, $option) = @_;
+    return $self->SUPER::select_row_named($sql, $where, $option);
+}
+
+sub select_all_named { #override
+    my $self = shift;
+    $self->_auto_set_row_object_enable;
+    if( $self->_is_sql_omit($_[0]) ) {
+        my ($where, $option) = @_;
+        return $self->SUPER::select_all_named($self->sql, $where, $option);
+    }
+    my ($sql, $where, $option) = @_;
+    return $self->SUPER::select_all_named($sql, $where, $option);
+}
+
+sub select_itr_named { #override
+    my $self = shift;
+    $self->_auto_set_row_object_enable;
+    if( $self->_is_sql_omit($_[0]) ) {
+        my ($where, $option) = @_;
+        return $self->SUPER::select_itr_named($self->sql, $where, $option);
+    }
+    my ($sql, $where, $option) = @_;
+    return $self->SUPER::select_itr_named($sql, $where, $option);
+}
+
+
 sub select_by_sql { #override
     my ($self, $sql, $params_aref, $table_name) = @_;
     $self->_auto_set_row_object_enable;
@@ -189,6 +234,7 @@ sub select_row_by_sql { #override
     return $self->SUPER::select_row_by_sql($sql, $params_aref, $table_name) if ( defined $table_name && $table_name ne '' );
     return $self->SUPER::select_row_by_sql($sql, $params_aref, $self->table_name);
 }
+
 
 sub select_all_by_sql { #override
     my ($self, $sql, $params_aref, $table_name) = @_;
@@ -322,7 +368,8 @@ sub sql_from_data_section {
     my $pkg = ref $self;
     my $ds = Data::Section::Simple->new($pkg);
     if ( !defined $section_sql_name ) {
-        $section_sql_name = (caller(1))[3];# method name
+        my $level = $self->_is_my_method( (caller(1))[3] ) ? 2 : 1;
+        $section_sql_name = (caller($level))[3];# method name
         $section_sql_name =~ s/.+::// ;
     }
     my $result = '';
@@ -332,6 +379,25 @@ sub sql_from_data_section {
         Carp::croak "can't find SQL from __DATA__ section : $_\n";
     };
     return $result;
+}
+
+# whether Kappa's method or not (only for sql specified method)
+sub _is_my_method {
+    my ($self, $method_name) = @_;
+    $method_name =~ s/.+::// ;
+    my %my_method = (        
+        'select_named'        => 1,
+        'select_row_named'    => 1,
+        'select_all_named'    => 1,
+        'select_itr_named'    => 1,
+        'select_by_sql'       => 1,
+        'select_row_by_sql'   => 1,
+        'select_all_by_sql'   => 1,
+        'select_itr_by_sql'   => 1,
+        'execute_query_named' => 1,
+        'execute_query'       => 1,
+    );
+    return exists $my_method{$method_name};
 }
 
 *sql = \&sql_from_data_section;
@@ -347,6 +413,11 @@ sub select_id { #override
 sub _is_table_name_omit {
     my ($self, $arg0) = @_;
     return defined $self->table_name && $self->table_name ne '' && ref $arg0 ne '';
+}
+
+sub _is_sql_omit {
+    my ($self, $arg0) = @_;
+    return ref $arg0 eq 'HASH';
 }
 
 
