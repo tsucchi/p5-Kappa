@@ -27,12 +27,12 @@ my $db = Kappa->new($dbh, {
 
 subtest 'sql_from_data_section', sub {
     my $db_for_test = $db->model('TEST');
-    is( $db_for_test->sql_from_data_section('test_sql'), "SELECT * FROM TEST;\n" );
+    is( $db_for_test->sql_from_data_section('test_sql'), "SELECT * FROM TEST;\n\n" );
 };
 
 subtest 'default SQL name', sub {
     my $db_for_test = $db->model('TEST');
-    is( $db_for_test->test_sql(), "SELECT * FROM TEST;\n" );
+    is( $db_for_test->test_sql(), "SELECT * FROM TEST;\n\n" );
 };
 
 subtest 'invalid section name', sub {
@@ -51,7 +51,7 @@ subtest 'cannot find SQL because table name is not determined', sub {
 
 subtest 'default SQL name in sql (method alias)', sub {
     my $db_for_test = $db->model('TEST');
-    is( $db_for_test->test_sql2, "SELECT * FROM TEST;\n" );
+    is( $db_for_test->test_sql2, "SELECT * FROM TEST;\n\n" );
 };
 
 

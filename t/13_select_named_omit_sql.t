@@ -37,7 +37,7 @@ my $db = Kappa->new($dbh, {
 
 subtest 'select_named', sub {
     my $model = $db->model('TEST');
-    is( $model->sql('test_select_named'), "SELECT * FROM TEST WHERE value = :value;\n");
+    is( $model->sql('test_select_named'), "SELECT * FROM TEST WHERE value = :value;\n\n");
     my $row = $model->test_select_named;
     ok( defined $row );
     is( $row->value, 'aaa');
@@ -46,7 +46,7 @@ subtest 'select_named', sub {
 
 subtest 'select_row_named', sub {
     my $model = $db->model('TEST');
-    is( $model->sql('test_select_row_named'), "SELECT * FROM TEST WHERE value = :value;\n");
+    is( $model->sql('test_select_row_named'), "SELECT * FROM TEST WHERE value = :value;\n\n");
     my $row = $model->test_select_row_named;
     ok( defined $row );
     is( $row->value, 'aaa');
@@ -54,7 +54,7 @@ subtest 'select_row_named', sub {
 
 subtest 'select_all_named', sub {
     my $model = $db->model('TEST');
-    is( $model->sql('test_select_all_named'), "SELECT * FROM TEST WHERE value = :value;\n");
+    is( $model->sql('test_select_all_named'), "SELECT * FROM TEST WHERE value = :value;\n\n");
 
     my @rows = $model->test_select_all_named();
     ok( @rows );
@@ -63,7 +63,7 @@ subtest 'select_all_named', sub {
 
 subtest 'select_itr_named', sub {
     my $model = $db->model('TEST');
-    is( $model->sql('test_select_itr_named'), "SELECT * FROM TEST WHERE value = :value;\n");
+    is( $model->sql('test_select_itr_named'), "SELECT * FROM TEST WHERE value = :value;\n\n");
 
     my $itr = $model->test_select_itr_named();
     my $row = $itr->next;
