@@ -46,20 +46,20 @@ subtest 'execute_query omit sql', sub {
 };
 
 subtest 'execute_query_named', sub {
-    $db->execute_query_named($sql, { id => 123, value => 'ccc' });
+    $db->execute_query_named($sql2, { id => 123, value => 'ccc' });
     my $row = $db->select('TEST', { id => 123 });
     ok( defined $row );
     is( $row->value, 'ccc');
 };
 
-# subtest 'execute_query omit sql', sub {
-#     my $model = $db->model('TEST');
-#     is( $model->sql('test_insert_by_execute_query'), $sql);
-#     $model->test_insert_by_execute_query(122, 'bbb');
-#     my $row = $db->select('TEST', { id => 122 });
-#     ok( defined $row );
-#     is( $row->value, 'bbb');
-# };
+subtest 'execute_query omit sql', sub {
+    my $model = $db->model('TEST');
+    is( $model->sql('test_insert_by_execute_query_named'), $sql2);
+    $model->test_insert_by_execute_query_named(124, 'ddd');
+    my $row = $db->select('TEST', { id => 124 });
+    ok( defined $row );
+    is( $row->value, 'ddd');
+};
 
 done_testing;
 

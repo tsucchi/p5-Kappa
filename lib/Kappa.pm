@@ -400,6 +400,17 @@ sub execute_query { #override
     return $self->SUPER::execute_query($sql, $binds_aref, $table_name);
 }
 
+sub execute_query_named { #override
+    my $self = shift;
+    if( $self->_is_sql_omit($_[0]) ) {
+        my ($params_href) = @_;
+        return $self->SUPER::execute_query_named($self->sql, $params_href);
+    }
+    my ($sql, $params_href, $table_name) = @_;
+    $table_name = $self->table_name if ( !defined $table_name );
+    return $self->SUPER::execute_query_named($sql, $params_href, $table_name);
+}
+
 sub sql_from_data_section {
     my ($self, $section_sql_name) = @_;
     my $pkg = ref $self;
@@ -754,6 +765,7 @@ if table class is defined and SQL is written in __DATA__ section. $sql is omitta
 
 run sql statement with named placeholder and returns statement handler($sth)
 
+if table class is defined and SQL is written in __DATA__ section. $sql is omittable and used method name as SQL name.
 
 =head2 sql()
 
