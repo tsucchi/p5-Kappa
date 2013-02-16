@@ -4,7 +4,7 @@ Revision history for Perl extension Kappa
         - parameter $sql can be ommitable in select_*_named, execute_query, and execute_query_named when
           table class is used and SQL is defined in __DATA__ section.
         - new featcure: provide customized error handling (requires SQL::Executor >= 0.16)
-
+        (- add MANIFEST test. It effects only for module author)
 
 0.16    2013/01/27
         - documentation fix
