@@ -424,7 +424,7 @@ sub sql_from_data_section {
 sub _is_my_method {
     my ($self, $method_name) = @_;
     $method_name =~ s/.+::// ;
-    my %my_method = (        
+    my %my_method = (
         'select_named'        => 1,
         'select_row_named'    => 1,
         'select_all_named'    => 1,
