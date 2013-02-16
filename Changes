@@ -1,5 +1,6 @@
 Revision history for Perl extension Kappa
 0.17
+        - new method: sql() (alias method to sql_from_data_section)
         - parameter $sql can be ommitable in select_*_named, execute_query, and execute_query_named when
           table class is used and SQL is defined in __DATA__ section.
         - new featcure: provide customized error handling (requires SQL::Executor >= 0.16)
