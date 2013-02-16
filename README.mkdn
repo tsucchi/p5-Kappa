@@ -333,6 +333,12 @@ is same as
 
 sql() is method alias to sql\_from\_data\_section()
 
+## handle\_exception($sql, $binds\_aref, $err\_message)
+
+When SQL error occured, this method is call-backed. you can override this method to customize error message and error handling.
+
+
+
 # DEFINE CUSTOMIZED ROW CLASS
 
 You can define Row class specified in specified in row\_namespace at new(). for example, define MyProj::Row::Order like this,

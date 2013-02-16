@@ -319,6 +319,10 @@ METHODS FROM PARENT CLASS(SQL::Executor)
 
     sql() is method alias to sql_from_data_section()
 
+  handle_exception($sql, $binds_aref, $err_message)
+    When SQL error occured, this method is call-backed. you can override
+    this method to customize error message and error handling.
+
 DEFINE CUSTOMIZED ROW CLASS
     You can define Row class specified in specified in row_namespace at
     new(). for example, define MyProj::Row::Order like this,
