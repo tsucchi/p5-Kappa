@@ -274,9 +274,15 @@ METHODS FROM PARENT CLASS(SQL::Executor)
   execute_query($sql, \@binds)
     run sql statement and returns statement handler($sth)
 
+    if table class is defined and SQL is written in __DATA__ section. $sql
+    is omittable and used method name as SQL name.
+
   execute_query_named($sql, $params_href)
     run sql statement with named placeholder and returns statement
     handler($sth)
+
+    if table class is defined and SQL is written in __DATA__ section. $sql
+    is omittable and used method name as SQL name.
 
   sql()
   sql_from_data_section($sql_name)

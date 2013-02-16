@@ -287,11 +287,13 @@ if table class is defined and select is called from table class, parameter $tabl
 
 run sql statement and returns statement handler($sth)
 
+if table class is defined and SQL is written in \_\_DATA\_\_ section. $sql is omittable and used method name as SQL name.
+
 ## execute\_query\_named($sql, $params\_href)
 
 run sql statement with named placeholder and returns statement handler($sth)
 
-
+if table class is defined and SQL is written in \_\_DATA\_\_ section. $sql is omittable and used method name as SQL name.
 
 ## sql()
 
