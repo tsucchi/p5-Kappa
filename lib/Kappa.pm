@@ -389,6 +389,17 @@ sub delete { #override
 }
 
 
+sub execute_query { #override
+    my $self = shift;
+    if( $self->_is_sql_omit($_[0]) ) {
+        my ($binds_aref) = @_;
+        return $self->SUPER::execute_query($self->sql, $binds_aref);
+    }
+    my ($sql, $binds_aref, $table_name) = @_;
+    $table_name = $self->table_name if ( !defined $table_name );
+    return $self->SUPER::execute_query($sql, $binds_aref, $table_name);
+}
+
 sub sql_from_data_section {
     my ($self, $section_sql_name) = @_;
     my $pkg = ref $self;
@@ -736,6 +747,8 @@ if table class is defined and select is called from table class, parameter $tabl
 =head2 execute_query($sql, \@binds)
 
 run sql statement and returns statement handler($sth)
+
+if table class is defined and SQL is written in __DATA__ section. $sql is omittable and used method name as SQL name.
 
 =head2 execute_query_named($sql, $params_href)
 

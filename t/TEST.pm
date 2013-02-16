@@ -38,3 +38,6 @@ SELECT * FROM TEST WHERE value = ?;
 @@ test_select_itr_by_sql
 SELECT * FROM TEST WHERE value = ?;
 
+@@ test_insert_by_execute_query
+INSERT INTO TEST (id, value) VALUES (?, ?);
+
