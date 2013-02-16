@@ -803,6 +803,11 @@ is same as
 
 sql() is method alias to sql_from_data_section()
 
+=head2 handle_exception($sql, $binds_aref, $err_message)
+
+When SQL error occured, this method is call-backed. you can override this method to customize error message and error handling.
+
+
 =head1 DEFINE CUSTOMIZED ROW CLASS
 
 You can define Row class specified in specified in row_namespace at new(). for example, define MyProj::Row::Order like this,
