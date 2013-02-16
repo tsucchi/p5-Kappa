@@ -418,6 +418,8 @@ sub sql_from_data_section {
     return $result;
 }
 
+*sql = \&sql_from_data_section;
+
 # whether Kappa's method or not (only for sql specified method)
 sub _is_my_method {
     my ($self, $method_name) = @_;
@@ -436,8 +438,6 @@ sub _is_my_method {
     );
     return exists $my_method{$method_name};
 }
-
-*sql = \&sql_from_data_section;
 
 sub select_id { #override
     my ($self) = @_;
