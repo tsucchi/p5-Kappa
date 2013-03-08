@@ -1,5 +1,6 @@
 Revision history for Perl extension Kappa
-0.18
+0.18    2013/03/08
+        - show line no when SQL execution is failed. (requires SQL::Executor >= 0.17)
 
 0.17    2013/02/16
         - new method: sql() (alias method to sql_from_data_section)
