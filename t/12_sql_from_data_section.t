@@ -37,7 +37,12 @@ subtest 'default SQL name', sub {
 
 subtest 'invalid section name', sub {
     my $db_for_test = $db->model('TEST');
-    is( $db_for_test->sql_from_data_section('no_exist_sql'), undef ); # (should it be raised exception?)
+    try {
+        $db_for_test->sql_from_data_section('no_exist_sql');
+        fail 'exception expected';
+    } catch {
+        like( $_, qr/^can't find SQL from __DATA__ section : /);
+    };
 };
 
 subtest 'cannot find SQL because table name is not determined', sub {

@@ -421,11 +421,16 @@ sub sql_from_data_section {
         $section_sql_name =~ s/.+::// ;
     }
     my $result = '';
+    my $error_message = '';
     try {
         $result = $ds->get_data_section($section_sql_name);
     } catch {
-        Carp::croak "can't find SQL from __DATA__ section : $_\n";
+        $result = undef;
+        $error_message = $_;
     };
+    if( !defined $result ) {
+        Carp::croak "can't find SQL from __DATA__ section : $error_message\n";
+    }
     return $result;
 }
 

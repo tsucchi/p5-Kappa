@@ -1,7 +1,7 @@
 Revision history for Perl extension Kappa
 
 0.19
-        -
+        - behavior change: sql_from_data_section() raise exception when section or file is not found.
 
 0.18    2013/03/08
         - show line no when SQL execution is failed. (requires SQL::Executor >= 0.17)
