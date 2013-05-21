@@ -1,4 +1,8 @@
 Revision history for Perl extension Kappa
+
+0.19
+        -
+
 0.18    2013/03/08
         - show line no when SQL execution is failed. (requires SQL::Executor >= 0.17)
 

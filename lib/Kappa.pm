@@ -3,7 +3,7 @@ use parent qw(SQL::Executor);
 use strict;
 use warnings;
 
-our $VERSION = '0.18';
+our $VERSION = '0.19';
 
 use Class::Accessor::Lite (
     ro => ['row_namespace', 'iterator_namespace', 'table_namespace', 'options', 'table_name'],
